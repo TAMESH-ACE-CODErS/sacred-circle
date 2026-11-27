@@ -2,53 +2,57 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
-function Muladhara() {
-  return (
-    <svg viewBox="0 0 48 48" className="h-8 w-8" fill="none" aria-hidden="true">
-      <circle cx="24" cy="24" r="20.5" stroke="currentColor" strokeWidth="1.3" opacity="0.65" />
-      {[0, 90, 180, 270].map((angle) => (
-        <path
-          key={angle}
-          d="M24 5c4.4 4.2 5.2 8.3 0 13-5.2-4.7-4.4-8.8 0-13z"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          transform={`rotate(${angle} 24 24)`}
-        />
-      ))}
-      <rect
-        x="16.5"
-        y="16.5"
-        width="15"
-        height="15"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        transform="rotate(45 24 24)"
-      />
-      <circle cx="24" cy="24" r="3" fill="currentColor" />
-    </svg>
-  )
-}
+const MULADHARA_RED = '#C62828'
+const MULADHARA_DEEP = '#B71C1C'
+const SAHASRARA_PURPLE = '#7E22CE'
+const SAHASRARA_LIGHT = '#9333EA'
 
-function Sahasrara() {
+function ChakraGlyph({ isDark }: { isDark: boolean }) {
+  const color = isDark ? SAHASRARA_PURPLE : MULADHARA_RED
+  const inner = isDark ? SAHASRARA_LIGHT : MULADHARA_DEEP
+  const petals = isDark ? 12 : 4
+
   return (
-    <svg viewBox="0 0 48 48" className="h-8 w-8" fill="none" aria-hidden="true">
-      <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="1" opacity="0.7" />
-      {Array.from({ length: 12 }).map((_, i) => (
-        <ellipse
-          key={i}
-          cx="24"
-          cy="10.5"
-          rx="3.1"
-          ry="6.4"
-          stroke="currentColor"
-          strokeWidth="1"
-          transform={`rotate(${i * 30} 24 24)`}
-          opacity="0.85"
-        />
-      ))}
-      <circle cx="24" cy="24" r="7.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="24" cy="24" r="2.6" fill="currentColor" />
-    </svg>
+    <>
+      <svg viewBox="0 0 48 48" className="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="21.5" stroke={color} strokeWidth="1.2" opacity="0.8" />
+        <circle cx="24" cy="24" r="18.5" stroke={inner} strokeWidth="0.8" opacity="0.45" />
+        {Array.from({ length: petals }).map((_, i) => (
+          <path
+            key={i}
+            d={
+              isDark
+                ? 'M24 22.5C20.6 16.4 20.8 9.3 24 4.2c3.2 5.1 3.4 12.2 0 18.3Z'
+                : 'M24 22.8C17.6 18.6 16.3 11.4 24 4.5c7.7 6.9 6.4 14.1 0 18.3Z'
+            }
+            stroke={i % 2 === 0 ? color : inner}
+            strokeWidth={isDark ? 0.95 : 1.35}
+            opacity={isDark ? 0.9 : 1}
+            transform={`rotate(${(360 / petals) * i} 24 24)`}
+          />
+        ))}
+        {isDark ? (
+          <circle cx="24" cy="24" r="8" stroke={inner} strokeWidth="1.2" />
+        ) : (
+          <rect
+            x="18"
+            y="18"
+            width="12"
+            height="12"
+            stroke={inner}
+            strokeWidth="1.2"
+            transform="rotate(45 24 24)"
+          />
+        )}
+      </svg>
+      <span
+        className="devanagari relative z-10 grid h-full w-full place-items-center text-[15px] font-bold leading-none"
+        style={{ color: inner }}
+        aria-hidden="true"
+      >
+        {isDark ? 'ॐ' : 'लं'}
+      </span>
+    </>
   )
 }
 
@@ -60,30 +64,34 @@ export function ChakraToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="inline-flex min-h-[52px] items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors duration-300"
+      className="inline-flex min-h-[52px] items-center gap-2 rounded-full border px-3 py-1.5 text-base font-medium transition-colors duration-500"
       style={{
         color: 'var(--text)',
         borderColor: 'var(--border)',
         background: 'var(--surface)',
       }}
-      aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+      aria-label={
+        isDark
+          ? 'Switch to light theme — Muladhara chakra, बीज मंत्र लं'
+          : 'Switch to dark theme — Sahasrara chakra, बीज मंत्र ॐ'
+      }
       title={`Switch to ${isDark ? 'light' : 'dark'} theme`}
     >
-      <span className="relative grid h-8 w-8 place-items-center">
+      <span className="relative grid h-10 w-10 shrink-0 place-items-center">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={theme}
-            className="absolute inset-0 grid place-items-center"
-            initial={{ opacity: 0, rotate: isDark ? -90 : 90, scale: 0.75 }}
+            className="absolute inset-0"
+            initial={{ opacity: 0, rotate: isDark ? -100 : 100, scale: 0.7 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: isDark ? 90 : -90, scale: 0.75 }}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, rotate: isDark ? 100 : -100, scale: 0.7 }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
-            {isDark ? <Sahasrara /> : <Muladhara />}
+            <ChakraGlyph isDark={isDark} />
           </motion.span>
         </AnimatePresence>
       </span>
-      <span>{isDark ? 'Dark' : 'Light'}</span>
+      <span className="hidden sm:inline">{isDark ? 'Dark' : 'Light'}</span>
     </button>
   )
 }
@@ -94,13 +102,14 @@ export function SoundToggle() {
     <button
       type="button"
       onClick={toggleMuted}
-      className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-3 py-2 text-sm transition-colors hover:opacity-75"
-      style={{ color: 'var(--muted)' }}
+      className="inline-flex min-h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full border px-3 py-2 text-base transition-colors hover:opacity-75"
+      style={{ color: 'var(--text)', borderColor: 'var(--border)', background: 'var(--surface)' }}
       aria-label={muted ? 'Turn Aum sound on' : 'Turn Aum sound off'}
+      aria-pressed={!muted}
       title={muted ? 'Turn Aum sound on' : 'Turn Aum sound off'}
     >
-      {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-      <span>{muted ? 'Sound off' : 'Sound on'}</span>
+      {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      <span className="hidden xl:inline">{muted ? 'Sound off' : 'Sound on'}</span>
     </button>
   )
 }

@@ -31,21 +31,29 @@ export function AboutSection() {
           </div>
         </div>
 
-        <div className="order-1 grid grid-cols-2 gap-4 lg:order-2">
-          <img
-            src={getFounderImage('clientM')}
-            alt="Diwakar Raipur"
-            className="card !p-0 aspect-[3/4] w-full overflow-hidden rounded-3xl object-cover object-top"
-          />
-          <img
-            src={getFounderImage('clientF')}
-            alt="Lina Bhave"
-            className="card mt-10 !p-0 aspect-[3/4] w-full overflow-hidden rounded-3xl object-cover object-top"
-          />
-          <div className="soft-panel col-span-2 mt-2 text-center">
-            <p className="font-display text-lg">28 years of practice · 100+ modalities · always free</p>
+        <figure className="order-1 mx-auto w-full max-w-md lg:order-2">
+          <div
+            className="rounded-[2.25rem] border-2 p-2.5"
+            style={{
+              background: 'var(--surface)',
+              borderColor: 'var(--border)',
+              boxShadow: 'var(--shadow)',
+            }}
+          >
+            <img
+              src={getFounderImage('clientMF')}
+              alt="Diwakar Raipur and Lina Bhave, founders of Sacred Circle, seated together"
+              className="block aspect-[4/5] w-full rounded-[1.75rem] object-cover object-top"
+              loading="lazy"
+            />
           </div>
-        </div>
+          <figcaption className="soft-panel mt-5 text-center">
+            <p className="font-display text-lg">Diwakar Raipur &amp; Lina Bhave</p>
+            <p className="mt-1 text-base" style={{ color: 'var(--muted)' }}>
+              28 years of practice · 100+ modalities · always free
+            </p>
+          </figcaption>
+        </figure>
       </div>
     </section>
   )

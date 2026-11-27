@@ -31,7 +31,7 @@ export function ReviewsSection({ limit }: { limit?: number }) {
             <figcaption className="flex items-center gap-4 border-t pt-5" style={{ borderColor: 'var(--border)' }}>
               <img
                 src={getReviewerImage(review.avatar_key, i) ?? undefined}
-                alt=""
+                alt={`Portrait of ${review.reviewer_name}`}
                 loading="lazy"
                 className="h-14 w-14 shrink-0 rounded-full object-cover"
               />

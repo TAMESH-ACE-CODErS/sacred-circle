@@ -5,6 +5,8 @@ import { SundaySection } from '../components/SundaySection'
 import { AboutSection } from '../components/AboutSection'
 import { MaterialsGallery } from '../components/MaterialsGallery'
 import { ReviewsSection } from '../components/ReviewsSection'
+import { YouTubeSessions } from '../components/YouTubeSessions'
+import { FaqSection } from '../components/FaqSection'
 import { SectionHeading } from '../components/SectionHeading'
 import { WHATSAPP_URL } from '../config/site'
 
@@ -13,16 +15,19 @@ const paths = [
     title: 'Healing',
     text: 'Gentle techniques that settle the nervous system and support the body’s own balance.',
     image: 'https://images.unsplash.com/photo-1505455184862-554165e5f6ba?auto=format&fit=crop&w=1000',
+    alt: 'A calm person resting in soft natural light during a healing practice',
   },
   {
     title: 'Manifestation',
     text: 'Simple practices to meet your own life with clarity, gratitude and steady attention.',
     image: 'https://images.unsplash.com/photo-1534630103086-5b1c106f74e0?auto=format&fit=crop&w=1000',
+    alt: 'An open journal and a quiet moment of reflection',
   },
   {
     title: 'Awareness',
     text: 'Guided meditation that helps you notice thoughts and feelings without being ruled by them.',
     image: 'https://images.unsplash.com/photo-1474557157379-8aa74a6ef541?auto=format&fit=crop&w=1000',
+    alt: 'A person sitting peacefully in meditation outdoors',
   },
 ]
 
@@ -42,7 +47,7 @@ export function HomePage() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {paths.map((path) => (
             <article key={path.title} className="card overflow-hidden !p-0">
-              <img src={path.image} alt="" loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              <img src={path.image} alt={path.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
               <div className="p-7">
                 <h3 className="font-display text-2xl">{path.title}</h3>
                 <p className="mt-3 text-base" style={{ color: 'var(--muted)' }}>{path.text}</p>
@@ -68,7 +73,11 @@ export function HomePage() {
         <MaterialsGallery limit={3} showFilters={false} />
       </section>
 
+      <YouTubeSessions />
+
       <ReviewsSection limit={4} />
+
+      <FaqSection />
 
       <section className="section-shell !pt-4">
         <div className="soft-panel flex flex-col items-start gap-6 text-center sm:items-center">

@@ -17,7 +17,7 @@ export function Navbar() {
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8" aria-label="Main navigation">
         <Link to="/" className="flex min-h-[52px] items-center gap-3" aria-label="Sacred Circle home">
-          <img src="/favicon.svg" alt="" className="h-10 w-10 shrink-0" />
+          <img src="/favicon.svg" alt="Sacred Circle logo" className="h-10 w-10 shrink-0" />
           <span className="font-display text-xl tracking-tight sm:text-2xl">Sacred Circle</span>
         </Link>
 
@@ -38,7 +38,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden sm:block"><SoundToggle /></div>
+          <SoundToggle />
           <ChakraToggle />
           <a
             href={WHATSAPP_URL}
@@ -88,8 +88,7 @@ export function Navbar() {
                   {item.label}
                 </NavLink>
               ))}
-              <div className="mt-2 flex items-center justify-between gap-2">
-                <SoundToggle />
+              <div className="mt-2 flex items-center justify-end gap-2">
                 <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-primary !text-sm">
                   Join Free Session
                 </a>

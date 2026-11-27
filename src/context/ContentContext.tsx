@@ -30,8 +30,10 @@ export const fallbackContent: SiteContent = {
   announcements: [
     {
       id: 'default-sunday',
-      message_en: 'Free Sunday meditation — every Sunday at 4:00 PM IST. Everyone is welcome.',
-      message_hi: 'हर रविवार शाम 4:00 बजे (IST) निःशुल्क ध्यान — सभी का स्वागत है।',
+      message_en:
+        'Free Weekly Sunday Meditation Session — Open to All | Join our WhatsApp Community →',
+      message_hi:
+        'हर रविवार निःशुल्क ध्यान सत्र — सभी के लिए खुला | हमारे WhatsApp समुदाय से जुड़ें →',
       link_url: WHATSAPP_URL,
       is_active: true,
       event_date: null,

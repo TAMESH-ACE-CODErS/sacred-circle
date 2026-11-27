@@ -1,6 +1,9 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { Layout } from './components/Layout'
+import { EntryReel } from './components/EntryReel'
+import { hasSeenIntro, markIntroSeen, REPLAY_INTRO_EVENT } from './lib/intro'
 
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })))
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
@@ -43,9 +46,25 @@ function RouteFallback() {
 }
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState(() => !hasSeenIntro())
+
+  useEffect(() => {
+    const replay = () => setShowIntro(true)
+    window.addEventListener(REPLAY_INTRO_EVENT, replay)
+    return () => window.removeEventListener(REPLAY_INTRO_EVENT, replay)
+  }, [])
+
+  const finishIntro = useCallback(() => {
+    markIntroSeen()
+    setShowIntro(false)
+  }, [])
+
   return (
     <>
       <ScrollToTop />
+      <AnimatePresence>
+        {showIntro && <EntryReel key="intro" onEnter={finishIntro} />}
+      </AnimatePresence>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route element={<Layout />}>

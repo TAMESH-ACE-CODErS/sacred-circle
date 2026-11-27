@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Mail, MessageCircle, Youtube } from 'lucide-react'
 import { useSiteContent } from '../hooks/useSiteContent'
+import { replayIntro } from '../lib/intro'
 
 export function Footer() {
   const { contact, sundayTime, navItems } = useSiteContent()
@@ -10,7 +11,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-3">
-            <img src="/favicon.svg" alt="" className="h-11 w-11" />
+            <img src="/favicon.svg" alt="Sacred Circle logo" className="h-11 w-11" />
             <span className="font-display text-2xl">Sacred Circle</span>
           </div>
           <p className="mt-4 max-w-sm" style={{ color: 'var(--muted)' }}>
@@ -51,7 +52,12 @@ export function Footer() {
 
       <div className="border-t px-5 py-6 text-center text-sm" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
         <p>© {new Date().getFullYear()} Sacred Circle. All meditation sessions and materials are free.</p>
-        <Link to="/admin" className="btn-link !min-h-0 !text-xs">Admin board</Link>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
+          <button type="button" onClick={replayIntro} className="btn-link !min-h-[48px] !text-base">
+            Replay Intro
+          </button>
+          <Link to="/admin" className="btn-link !min-h-[48px] !text-base">Admin board</Link>
+        </div>
       </div>
     </footer>
   )

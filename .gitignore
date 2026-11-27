@@ -5,3 +5,9 @@ dist
 .env.*.local
 .DS_Store
 *.log
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+api/*.js
+api/*.d.ts
+.playwright-cli/

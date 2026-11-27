@@ -100,7 +100,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                   {item.thumbnail_url ? (
                     <img
                       src={item.thumbnail_url}
-                      alt=""
+                      alt={`Cover image for ${item.title}`}
                       loading="lazy"
                       className="aspect-video w-full object-cover"
                     />
