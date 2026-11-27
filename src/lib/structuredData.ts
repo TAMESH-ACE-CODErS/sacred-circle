@@ -1,4 +1,4 @@
-import type { YouTubeVideo } from '../../api/youtube'
+import type { YouTubeVideo } from '../types/youtube'
 
 const VIDEO_DATA_ID = 'sacred-circle-video-jsonld'
 

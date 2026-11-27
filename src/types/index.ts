@@ -1,3 +1,5 @@
+export type { YouTubeFeed, YouTubeVideo } from './youtube'
+
 export type NavItem = {
   label: string
   href: string

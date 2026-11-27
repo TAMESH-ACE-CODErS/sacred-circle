@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ExternalLink, Play, X } from 'lucide-react'
-import type { YouTubeFeed, YouTubeVideo } from '../../api/youtube'
+import type { YouTubeFeed, YouTubeVideo } from '../types/youtube'
 import { YOUTUBE_URL } from '../config/site'
 import { useLanguage } from '../context/LanguageContext'
 import { setVideoStructuredData } from '../lib/structuredData'
