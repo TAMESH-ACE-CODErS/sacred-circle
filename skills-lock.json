@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "skills": {
+    "chrome-devtools-mcp-skill": {
+      "source": "holon-run/uxc",
+      "commit": "35176b115023c34cc457220c10ec592d014bdca9",
+      "sourceType": "github",
+      "skillPath": "skills/chrome-devtools-mcp-skill/SKILL.md",
+      "computedHash": "0913fbacf557acf36bf3de583e1e506086de3a949cf3f29b17cac8ba9e0e010c"
+    },
+    "contextual-commit": {
+      "source": "berserkdisruptors/contextual-commits",
+      "commit": "12efb1d7a8e182270ab240f22f84bc44790ce300",
+      "sourceType": "github",
+      "skillPath": "skills/contextual-commit/SKILL.md",
+      "computedHash": "4fc4616fc6e1cab29a0f69db57b475979cc3bc9169442e17aa4c6ff3ca12f694"
+    },
+    "conventional-commits": {
+      "source": "patricio0312rev/skills",
+      "commit": "79ea6af485698b31060b63f0066f712560757b29",
+      "sourceType": "github",
+      "skillPath": "foundation/conventional-commits/SKILL.md",
+      "computedHash": "9ee955406ca87842850f0e920c07e760afc9b6064ed0dd46072ab8649fe9d048"
+    },
+    "dotnet-library-docs": {
+      "source": "novotnyllc/dotnet-artisan",
+      "commit": "0baeac5b11f3c6960a968cd2286a2b0b4d5280a5",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-artisan/skills/dotnet-library-docs/SKILL.md",
+      "computedHash": "b9240fc2297c30735e48b1db1e26e75bbfdaa0d3f74db207fbfc7888a466793e"
+    },
+    "playwright-cli": {
+      "source": "microsoft/playwright-cli",
+      "commit": "dc5f4d5616ab5a28ded12fd7101a4d49bd59a820",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-cli/SKILL.md",
+      "computedHash": "54c3f1e47b2566ecc3a2c1515823f77f4609edfe8029351924311dafc0d2ba66"
+    },
+    "playwright-explore-website": {
+      "source": "github/awesome-copilot",
+      "commit": "93fc8b9ee3ef56b9b5e7261e6ce92d314cb2c1cf",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-explore-website/SKILL.md",
+      "computedHash": "f1f960c9ed5ad532dd5cfc4182740188b5b54291e1c6077cc1f6ef8703c0c0ef"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "sourceType": "github",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "computedHash": "6a9104fac7e16c3cec2bc118943aefd331cac35b4cfabd427cea4dc16337c6a5"
+    }
+  }
+}

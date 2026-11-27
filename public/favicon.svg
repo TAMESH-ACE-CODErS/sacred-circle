@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sacred Circle">
+  <rect width="64" height="64" rx="14" fill="#faf6ee"/>
+  <g fill="none" stroke="#a47529" stroke-width="1.6" stroke-linecap="round">
+    <circle cx="32" cy="32" r="22"/>
+    <circle cx="32" cy="32" r="16"/>
+    <circle cx="32" cy="32" r="9"/>
+    <path d="M32 10c6 6 6 12 0 18-6-6-6-12 0-18z"/>
+    <path d="M54 32c-6 6-12 6-18 0 6-6 12-6 18 0z"/>
+    <path d="M32 54c-6-6-6-12 0-18 6 6 6 12 0 18z"/>
+    <path d="M10 32c6-6 12-6 18 0-6 6-12 6-18 0z"/>
+    <path d="M46.4 17.6c-1 8.2-5.4 12.6-13.6 13.6 1-8.2 5.4-12.6 13.6-13.6z"/>
+    <path d="M46.4 46.4c-8.2-1-12.6-5.4-13.6-13.6 8.2 1 12.6 5.4 13.6 13.6z"/>
+    <path d="M17.6 46.4c1-8.2 5.4-12.6 13.6-13.6-1 8.2-5.4 12.6-13.6 13.6z"/>
+    <path d="M17.6 17.6c8.2 1 12.6 5.4 13.6 13.6-8.2-1-12.6-5.4-13.6-13.6z"/>
+  </g>
+  <circle cx="32" cy="32" r="3.2" fill="#c79535"/>
+</svg>
