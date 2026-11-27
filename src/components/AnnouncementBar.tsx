@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useSiteContent } from '../hooks/useSiteContent'
+import { useLanguage } from '../context/LanguageContext'
 import { WHATSAPP_URL } from '../config/site'
 
 export function AnnouncementBar() {
   const { announcements } = useSiteContent()
+  const { language, t } = useLanguage()
   const announcement = announcements[0]
   const [dismissed, setDismissed] = useState(
     () => sessionStorage.getItem('sc-announcement-dismissed') === 'yes',
@@ -43,21 +45,18 @@ export function AnnouncementBar() {
               className="inline-flex min-h-[48px] items-center text-base font-semibold underline decoration-1 underline-offset-4 hover:opacity-75"
               style={{ color: 'var(--text)' }}
             >
-              {messageEn}
+              {language === 'hi' ? messageHi : messageEn}
             </a>
-            <p className="devanagari text-base" style={{ color: 'var(--muted)' }}>
-              {messageHi}
-            </p>
             <button
               type="button"
               onClick={dismiss}
               className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center gap-1 rounded-full px-2 text-base"
               style={{ color: 'var(--muted)' }}
-              aria-label="Dismiss announcement"
-              title="Dismiss announcement"
+              aria-label={t('common.dismiss')}
+              title={t('common.dismiss')}
             >
               <X size={20} />
-              <span className="hidden sm:inline">Dismiss</span>
+              <span className="hidden sm:inline">{t('common.dismiss')}</span>
             </button>
           </div>
         </motion.div>

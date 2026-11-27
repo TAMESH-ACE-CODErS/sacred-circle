@@ -64,6 +64,19 @@ h3 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
   line-height: 1.85;
 }
 
+html[lang='hi'] body,
+html[lang='hi'] h1,
+html[lang='hi'] h2,
+html[lang='hi'] h3,
+html[lang='hi'] h4,
+html[lang='hi'] .font-display {
+  font-family: 'Noto Sans Devanagari', 'Nirmala UI', Mangal, sans-serif;
+}
+
+[id] {
+  scroll-margin-top: 9.5rem;
+}
+
 button, a, input, textarea, select {
   font: inherit;
 }

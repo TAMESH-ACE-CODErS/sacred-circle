@@ -32,6 +32,18 @@ export type Review = {
   sort_order: number
 }
 
+export type QuoteCategory = 'quote' | 'opinion' | 'reflection'
+export type QuoteStatus = 'published' | 'hidden'
+
+export type CommunityQuote = {
+  id: string
+  timestamp: string
+  author_name: string
+  category: QuoteCategory
+  content: string
+  status: QuoteStatus
+}
+
 export type ContactLinks = {
   youtube: string
   whatsapp: string

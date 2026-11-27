@@ -1,7 +1,33 @@
 import type { NavItem } from '../types'
+import type { TranslationKey } from '../i18n/translations'
 
-// Default navigation. Supabase `site_settings.nav_headers` overrides this
-// at runtime, so founders can add or rename a page without a code change.
+/**
+ * The homepage is a long, single story. These are the sections the sticky
+ * navbar follows with IntersectionObserver, in reading order.
+ */
+export const siteSections = [
+  { id: 'home', labelKey: 'nav.home' },
+  { id: 'about', labelKey: 'nav.about' },
+  { id: 'sunday', labelKey: 'nav.sunday' },
+  { id: 'videos', labelKey: 'nav.youtube' },
+  { id: 'quotes', labelKey: 'nav.quotes' },
+  { id: 'materials', labelKey: 'nav.materials' },
+  { id: 'reviews', labelKey: 'nav.reviews' },
+  { id: 'contact', labelKey: 'nav.contact' },
+] as const satisfies readonly { id: string; labelKey: TranslationKey }[]
+
+export type SectionId = (typeof siteSections)[number]['id']
+
+export const routeSectionMap: Record<string, SectionId> = {
+  '/': 'home',
+  '/about': 'about',
+  '/sunday-meditation': 'sunday',
+  '/materials': 'materials',
+  '/reviews': 'reviews',
+  '/community': 'contact',
+}
+
+// Supabase `site_settings.nav_headers` can still override the footer links.
 export const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },

@@ -3,113 +3,117 @@ import { ArrowLeft, LogOut, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useAdmin } from '../hooks/useAdmin'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { useLanguage } from '../context/LanguageContext'
 import { AdminAnnouncements } from '../components/admin/AdminAnnouncements'
 import { AdminMaterials } from '../components/admin/AdminMaterials'
 import { AdminReviews } from '../components/admin/AdminReviews'
 import { AdminSettings } from '../components/admin/AdminSettings'
+import { AdminQuotes } from '../components/admin/AdminQuotes'
+import type { TranslationKey } from '../i18n/translations'
 
-type Tab = 'announcements' | 'materials' | 'reviews' | 'settings'
+type Tab = 'announcements' | 'materials' | 'reviews' | 'quotes' | 'settings'
 
-const tabs: { id: Tab; label: string }[] = [
-  { id: 'announcements', label: 'Announcements' },
-  { id: 'materials', label: 'Materials' },
-  { id: 'reviews', label: 'Experiences' },
-  { id: 'settings', label: 'Settings' },
+const tabs: { id: Tab; labelKey: TranslationKey }[] = [
+  { id: 'announcements', labelKey: 'admin.tab.announcements' },
+  { id: 'materials', labelKey: 'admin.tab.materials' },
+  { id: 'reviews', labelKey: 'admin.tab.reviews' },
+  { id: 'quotes', labelKey: 'admin.tab.quotes' },
+  { id: 'settings', labelKey: 'admin.tab.settings' },
 ]
 
 export function AdminPage() {
-  const [tab, setTab] = useState<Tab>('announcements')
+  const [tab, setTab] = useState<Tab>(() => (isSupabaseConfigured ? 'announcements' : 'quotes'))
   const admin = useAdmin()
-
-  if (!isSupabaseConfigured) {
-    return (
-      <section className="section-shell max-w-4xl">
-        <div className="card">
-          <p className="eyebrow">Admin board</p>
-          <h1 className="!text-3xl">Connect Supabase to manage content</h1>
-          <p className="mt-5 text-lg" style={{ color: 'var(--muted)' }}>
-            The public site works with built-in sample content. To enable Google sign-in, private PIN
-            verification and editing, copy <code>.env.example</code> to <code>.env.local</code>, add your
-            project values, then run <code>supabase/schema.sql</code> in the Supabase SQL editor.
-          </p>
-          <ol className="mt-6 list-decimal space-y-2 pl-6 text-lg" style={{ color: 'var(--muted)' }}>
-            <li>Create a Supabase project and enable Google as an auth provider.</li>
-            <li>Run <code>supabase/schema.sql</code>.</li>
-            <li>Add the allowlisted admin Gmail addresses in <code>admin_allowlist</code>.</li>
-            <li>Restart the dev server and sign in below.</li>
-          </ol>
-          <Link to="/" className="btn-primary mt-8"><ArrowLeft size={18} /> Back to the circle</Link>
-        </div>
-      </section>
-    )
-  }
-
-  if (admin.loading) {
-    return (
-      <section className="section-shell">
-        <div className="card mx-auto max-w-xl text-center">
-          <p className="text-lg" style={{ color: 'var(--muted)' }}>Checking your access…</p>
-        </div>
-      </section>
-    )
-  }
-
-  if (!admin.signedIn) {
-    return (
-      <section className="section-shell max-w-3xl">
-        <div className="card text-center">
-          <span className="inline-flex h-14 w-14 items-center justify-center rounded-full" style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}>
-            <ShieldCheck size={26} />
-          </span>
-          <p className="eyebrow mt-6">Private area</p>
-          <h1 className="!text-3xl">Admin board</h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg" style={{ color: 'var(--muted)' }}>
-            This area is open only to Gmail addresses listed in the admin allowlist. Visitors never
-            need to sign in.
-          </p>
-          {admin.error && <p className="mt-4 text-sm text-red-700 dark:text-red-300">{admin.error}</p>}
-          <button type="button" onClick={admin.signIn} className="btn-primary mt-8">
-            Continue with Google
-          </button>
-          <div className="mt-6"><Link to="/" className="btn-link">Back to the circle</Link></div>
-        </div>
-      </section>
-    )
-  }
-
-  if (!admin.isAdmin) {
-    return (
-      <section className="section-shell max-w-3xl">
-        <div className="card text-center">
-          <h1 className="!text-3xl">This account is not on the allowlist</h1>
-          <p className="mt-5 text-lg" style={{ color: 'var(--muted)' }}>
-            You are signed in as <strong>{admin.user?.email}</strong>. Ask an administrator to add this
-            Gmail address to <code>admin_allowlist</code>, then refresh this page.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <button type="button" onClick={admin.signOut} className="btn-secondary"><LogOut size={18} /> Sign out</button>
-            <Link to="/" className="btn-primary">Back to the circle</Link>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  const { t } = useLanguage()
+  const signedInAdmin = isSupabaseConfigured && admin.signedIn && admin.isAdmin
+  const visibleTabs = isSupabaseConfigured ? tabs : tabs.filter((item) => item.id === 'quotes')
 
   return (
     <section className="section-shell !py-12 sm:!py-16">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="eyebrow">Private area</p>
-          <h1 className="!text-3xl sm:!text-4xl">Admin board</h1>
-          <p className="mt-3" style={{ color: 'var(--muted)' }}>Signed in as {admin.user?.email}</p>
+          <p className="eyebrow">{t('admin.privateArea')}</p>
+          <h1 className="!text-3xl sm:!text-4xl">{t('footer.admin')}</h1>
+          {signedInAdmin && (
+            <p className="mt-3" style={{ color: 'var(--muted)' }}>
+              {t('admin.signedInAs')} {admin.user?.email}
+            </p>
+          )}
         </div>
-        <button type="button" onClick={admin.signOut} className="btn-secondary">
-          <LogOut size={18} /> Sign out
-        </button>
+        {admin.signedIn && (
+          <button type="button" onClick={admin.signOut} className="btn-secondary">
+            <LogOut size={18} /> {t('common.signOut')}
+          </button>
+        )}
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Admin sections">
-        {tabs.map((item) => (
+      {!isSupabaseConfigured && (
+        <div className="card mt-8">
+          <h2 className="!text-2xl">{t('common.adminSupabaseTitle')}</h2>
+          <p className="mt-3 text-lg" style={{ color: 'var(--muted)' }}>
+            {t('common.adminSupabaseBody')}
+          </p>
+          <details className="mt-4">
+            <summary className="min-h-[48px] cursor-pointer font-semibold">
+              {t('common.readAll')}
+            </summary>
+            <ol className="mt-3 list-decimal space-y-2 pl-6 text-lg" style={{ color: 'var(--muted)' }}>
+              <li>Create a Supabase project and enable Google as an auth provider.</li>
+              <li>Run <code>supabase/schema.sql</code>.</li>
+              <li>Add the allowlisted admin Gmail addresses in <code>admin_allowlist</code>.</li>
+              <li>Restart the dev server, then sign in with the allowlisted Gmail account.</li>
+            </ol>
+          </details>
+          <Link to="/" className="btn-link mt-4 !justify-start">
+            <ArrowLeft size={18} /> {t('admin.backToCircle')}
+          </Link>
+        </div>
+      )}
+
+      {isSupabaseConfigured && admin.loading && (
+        <div className="card mt-8">
+          <p className="text-lg" style={{ color: 'var(--muted)' }}>{t('common.checkingAccess')}</p>
+        </div>
+      )}
+
+      {isSupabaseConfigured && !admin.loading && !admin.signedIn && (
+        <div className="card mt-8 text-center">
+          <span
+            className="inline-flex h-14 w-14 items-center justify-center rounded-full"
+            style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}
+          >
+            <ShieldCheck size={26} />
+          </span>
+          <h2 className="mt-5 !text-2xl">{t('footer.admin')}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg" style={{ color: 'var(--muted)' }}>
+            {t('admin.signInBody')}
+          </p>
+          {admin.error && <p className="mt-4 text-base text-red-800 dark:text-red-300">{admin.error}</p>}
+          <button type="button" onClick={admin.signIn} className="btn-primary mt-7">
+            {t('common.signInGoogle')}
+          </button>
+          <div className="mt-5"><Link to="/" className="btn-link">{t('admin.backToCircle')}</Link></div>
+        </div>
+      )}
+
+      {isSupabaseConfigured && !admin.loading && admin.signedIn && !admin.isAdmin && (
+        <div className="card mt-8 text-center">
+          <h2 className="!text-2xl">{t('common.notAdminTitle')}</h2>
+          <p className="mt-5 text-lg" style={{ color: 'var(--muted)' }}>
+            {t('common.notAdminBody').replace('{email}', admin.user?.email ?? '')}
+          </p>
+          <p className="mt-3 text-base" style={{ color: 'var(--muted)' }}>{t('admin.allowlistBody')}</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <button type="button" onClick={admin.signOut} className="btn-secondary">
+              <LogOut size={18} /> {t('common.signOut')}
+            </button>
+            <Link to="/" className="btn-primary">{t('admin.backToCircle')}</Link>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label={t('admin.privateArea')}>
+        {visibleTabs.map((item) => (
           <button
             key={item.id}
             type="button"
@@ -123,16 +127,22 @@ export function AdminPage() {
               color: tab === item.id ? 'var(--bg)' : 'var(--muted)',
             }}
           >
-            {item.label}
+            {t(item.labelKey)}
           </button>
         ))}
       </div>
 
       <div className="mt-8 space-y-8">
-        {tab === 'announcements' && <AdminAnnouncements />}
-        {tab === 'materials' && <AdminMaterials />}
-        {tab === 'reviews' && <AdminReviews />}
-        {tab === 'settings' && <AdminSettings />}
+        {tab === 'quotes' && <AdminQuotes />}
+        {tab !== 'quotes' && !signedInAdmin && (
+          <div className="card">
+            <p className="text-lg" style={{ color: 'var(--muted)' }}>{t('admin.supabaseOnly')}</p>
+          </div>
+        )}
+        {signedInAdmin && tab === 'announcements' && <AdminAnnouncements />}
+        {signedInAdmin && tab === 'materials' && <AdminMaterials />}
+        {signedInAdmin && tab === 'reviews' && <AdminReviews />}
+        {signedInAdmin && tab === 'settings' && <AdminSettings />}
       </div>
     </section>
   )

@@ -37,8 +37,7 @@ function playFallback() {
   void audio.play().catch(() => undefined)
 }
 
-export function playAum(muted: boolean): void {
-  if (muted) return
+export function playAum(): void {
   // Avoid stacking voices on a fast double tap.
   if (Date.now() - lastPlayedAt < 700) return
   lastPlayedAt = Date.now()

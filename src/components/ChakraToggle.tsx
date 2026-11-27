@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Volume2, VolumeX } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
 const MULADHARA_RED = '#C62828'
@@ -92,24 +91,6 @@ export function ChakraToggle() {
         </AnimatePresence>
       </span>
       <span className="hidden sm:inline">{isDark ? 'Dark' : 'Light'}</span>
-    </button>
-  )
-}
-
-export function SoundToggle() {
-  const { muted, toggleMuted } = useTheme()
-  return (
-    <button
-      type="button"
-      onClick={toggleMuted}
-      className="inline-flex min-h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full border px-3 py-2 text-base transition-colors hover:opacity-75"
-      style={{ color: 'var(--text)', borderColor: 'var(--border)', background: 'var(--surface)' }}
-      aria-label={muted ? 'Turn Aum sound on' : 'Turn Aum sound off'}
-      aria-pressed={!muted}
-      title={muted ? 'Turn Aum sound on' : 'Turn Aum sound off'}
-    >
-      {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      <span className="hidden xl:inline">{muted ? 'Sound off' : 'Sound on'}</span>
     </button>
   )
 }

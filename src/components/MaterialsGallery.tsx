@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { LockKeyhole, Search, UnlockKeyhole } from 'lucide-react'
 import { useSiteContent } from '../hooks/useSiteContent'
+import { useLanguage } from '../context/LanguageContext'
 import { MediaPlayer } from './MediaPlayer'
 import { MediaIcon } from './MediaIcon'
 import { PinGate, type UnlockedMaterial } from './PinGate'
@@ -14,6 +15,7 @@ type Props = {
 
 export function MaterialsGallery({ limit, showFilters = true }: Props) {
   const { materials } = useSiteContent()
+  const { t } = useLanguage()
   const [category, setCategory] = useState('All')
   const [query, setQuery] = useState('')
   const [gateMaterial, setGateMaterial] = useState<Material | null>(null)
@@ -52,9 +54,9 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search the library"
+              placeholder={t('materials.search')}
               className="field !pl-11"
-              aria-label="Search materials"
+              aria-label={t('materials.searchLabel')}
             />
           </div>
           <div className="flex flex-wrap gap-2" aria-label="Filter by category">
@@ -71,7 +73,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                 }}
                 aria-pressed={item === category}
               >
-                {item}
+                {item === 'All' ? t('materials.all') : item}
               </button>
             ))}
           </div>
@@ -131,7 +133,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                       />
                       {isYouTube && !open && (
                         <p className="mt-2 text-xs" style={{ color: 'var(--muted)' }}>
-                          If the video does not load here, open it on YouTube.
+                          {t('materials.fallback')}
                         </p>
                       )}
                     </div>
@@ -142,7 +144,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                       className="btn-secondary mt-6 w-full"
                     >
                       <LockKeyhole size={18} />
-                      Enter PIN to open
+                      {t('materials.enterPin')}
                     </button>
                   )}
                 </div>
@@ -154,7 +156,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
 
       {!shown.length && (
         <p className="mt-12 text-center text-lg" style={{ color: 'var(--muted)' }}>
-          No materials match that search. Try a different word or category.
+          {t('materials.noMatches')}
         </p>
       )}
 
@@ -172,7 +174,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
 
       <p className="mt-10 flex items-center justify-center gap-2 text-sm" style={{ color: 'var(--muted)' }}>
         <UnlockKeyhole size={16} />
-        Every material is offered freely. If a PIN is needed, it is shared in the Sunday session.
+        {t('materials.pinFooter')}
       </p>
     </>
   )

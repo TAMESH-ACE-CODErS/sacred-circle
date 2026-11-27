@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ExternalLink, Play, X } from 'lucide-react'
 import type { YouTubeFeed, YouTubeVideo } from '../../api/youtube'
 import { YOUTUBE_URL } from '../config/site'
+import { useLanguage } from '../context/LanguageContext'
 import { setVideoStructuredData } from '../lib/structuredData'
 import { SectionHeading } from './SectionHeading'
 
@@ -10,6 +11,7 @@ export function YouTubeSessions() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
   const [status, setStatus] = useState<'loading' | 'ready' | 'unavailable'>('loading')
   const [active, setActive] = useState<YouTubeVideo | null>(null)
+  const { t, language } = useLanguage()
 
   useEffect(() => {
     let cancelled = false
@@ -50,29 +52,26 @@ export function YouTubeSessions() {
     <section id="videos" className="section-shell !pt-8">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
-          eyebrow="Watch & revisit"
-          title="Latest YouTube Sessions"
-          description="New recordings appear here automatically, usually within thirty minutes of being posted."
+          eyebrow={t('videos.eyebrow')}
+          title={t('videos.title')}
+          description={t('videos.description')}
         />
         <a href={YOUTUBE_URL} target="_blank" rel="noreferrer" className="btn-secondary shrink-0">
-          Visit our channel <ExternalLink size={18} />
+          {t('videos.visitChannel')} <ExternalLink size={18} />
         </a>
       </div>
 
       {status === 'loading' && (
         <p className="soft-panel mt-10 text-center text-lg" role="status" aria-live="polite">
-          Gathering the latest sessions…
+          {t('videos.loading')}
         </p>
       )}
 
       {status === 'unavailable' && (
         <div className="soft-panel mt-10 text-center">
-          <p className="text-lg">
-            Recordings are not available to load right now. You can still watch every session on our
-            YouTube channel.
-          </p>
+          <p className="text-lg">{t('videos.unavailable')}</p>
           <a href={YOUTUBE_URL} target="_blank" rel="noreferrer" className="btn-primary mt-6">
-            Open Sacred Circle on YouTube
+            {t('videos.openChannel')}
           </a>
         </div>
       )}
@@ -85,12 +84,12 @@ export function YouTubeSessions() {
                 type="button"
                 onClick={() => setActive(video)}
                 className="group block w-full text-left"
-                aria-label={`Play ${video.title}`}
+                aria-label={`${t('videos.play')} ${video.title}`}
               >
                 <span className="relative block aspect-video overflow-hidden">
                   <img
                     src={video.thumbnail}
-                    alt={`Thumbnail for ${video.title}`}
+                    alt={`${t('videos.thumbnailAlt')} ${video.title}`}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -112,7 +111,7 @@ export function YouTubeSessions() {
                     {video.title}
                   </span>
                   <span className="mt-3 block text-base" style={{ color: 'var(--muted)' }}>
-                    {new Date(video.publishedAt).toLocaleDateString('en-IN', {
+                    {new Date(video.publishedAt).toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-IN', {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
@@ -156,7 +155,7 @@ export function YouTubeSessions() {
                   onClick={() => setActive(null)}
                   className="inline-flex min-h-[48px] min-w-[48px] shrink-0 items-center justify-center rounded-full"
                   style={{ color: 'var(--muted)' }}
-                  aria-label="Close video"
+                  aria-label={t('videos.close')}
                 >
                   <X size={24} />
                 </button>
@@ -176,7 +175,7 @@ export function YouTubeSessions() {
                 rel="noreferrer"
                 className="btn-link mt-4 !min-h-[48px] px-2"
               >
-                Watch on YouTube <ExternalLink size={18} />
+                {t('videos.watch')} <ExternalLink size={18} />
               </a>
             </motion.div>
           </motion.div>

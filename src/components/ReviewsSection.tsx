@@ -2,20 +2,22 @@ import { Link } from 'react-router-dom'
 import { Quote } from 'lucide-react'
 import { SectionHeading } from './SectionHeading'
 import { useSiteContent } from '../hooks/useSiteContent'
+import { useLanguage } from '../context/LanguageContext'
 import { getReviewerImage } from '../config/mediaManifest'
 
 const hasDevanagari = (text: string) => /[\u0900-\u097F]/.test(text)
 
 export function ReviewsSection({ limit }: { limit?: number }) {
   const { reviews } = useSiteContent()
+  const { t } = useLanguage()
   const shown = typeof limit === 'number' ? reviews.slice(0, limit) : reviews
 
   return (
     <section id="reviews" className="section-shell">
       <SectionHeading
-        eyebrow="Experiences from the circle"
-        title="Words shared by our community"
-        description="These are the experiences people chose to share, in their own words and in their own language."
+        eyebrow={t('reviews.eyebrow')}
+        title={t('reviews.title')}
+        description={t('reviews.description')}
         centered
       />
 
@@ -31,7 +33,7 @@ export function ReviewsSection({ limit }: { limit?: number }) {
             <figcaption className="flex items-center gap-4 border-t pt-5" style={{ borderColor: 'var(--border)' }}>
               <img
                 src={getReviewerImage(review.avatar_key, i) ?? undefined}
-                alt={`Portrait of ${review.reviewer_name}`}
+                alt={`${t('reviews.portraitAlt')} ${review.reviewer_name}`}
                 loading="lazy"
                 className="h-14 w-14 shrink-0 rounded-full object-cover"
               />
@@ -43,7 +45,7 @@ export function ReviewsSection({ limit }: { limit?: number }) {
 
       {limit !== undefined && reviews.length > limit && (
         <div className="mt-10 text-center">
-          <Link to="/reviews" className="btn-secondary">Read all experiences</Link>
+          <Link to="/reviews" className="btn-secondary">{t('reviews.readAll')}</Link>
         </div>
       )}
     </section>

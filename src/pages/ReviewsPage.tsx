@@ -1,14 +1,17 @@
 import { PageHero } from '../components/PageHero'
 import { ReviewsSection } from '../components/ReviewsSection'
 import { getReviewerImage } from '../config/mediaManifest'
+import { useLanguage } from '../context/LanguageContext'
 
 export function ReviewsPage() {
+  const { t } = useLanguage()
+
   return (
     <>
       <PageHero
-        eyebrow="Community experiences"
-        title="In their own words"
-        description="Some people have kindly shared what changed for them. We offer these as honest experiences, not promises — every path unfolds differently."
+        eyebrow={t('reviewsPage.heroEyebrow')}
+        title={t('reviewsPage.heroTitle')}
+        description={t('reviewsPage.heroDescription')}
         image={getReviewerImage('reviewerMF') ?? undefined}
         imageAlt=""
       />

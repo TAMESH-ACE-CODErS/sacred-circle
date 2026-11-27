@@ -5,6 +5,7 @@ import { MotionConfig } from 'framer-motion'
 import App from './App'
 import { ThemeProvider } from './context/ThemeContext'
 import { ContentProvider } from './context/ContentContext'
+import { LanguageProvider } from './context/LanguageContext'
 import './index.css'
 
 const root = document.getElementById('root')
@@ -16,7 +17,9 @@ createRoot(root).render(
       <MotionConfig reducedMotion="user">
         <ThemeProvider>
           <ContentProvider>
-            <App />
+            <LanguageProvider>
+              <App />
+            </LanguageProvider>
           </ContentProvider>
         </ThemeProvider>
       </MotionConfig>

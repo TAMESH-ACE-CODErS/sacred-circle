@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Layout } from './components/Layout'
 import { EntryReel } from './components/EntryReel'
-import { hasSeenIntro, markIntroSeen, REPLAY_INTRO_EVENT } from './lib/intro'
+import { REPLAY_INTRO_EVENT } from './lib/intro'
 
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })))
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
@@ -27,11 +27,16 @@ const pageTitles: Record<string, string> = {
 }
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' })
     document.title = pageTitles[pathname] ?? 'Page Not Found — Sacred Circle'
-  }, [pathname])
+    const frame = window.requestAnimationFrame(() => {
+      const target = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      else window.scrollTo({ top: 0, behavior: 'auto' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [pathname, hash])
   return null
 }
 
@@ -46,7 +51,7 @@ function RouteFallback() {
 }
 
 export default function App() {
-  const [showIntro, setShowIntro] = useState(() => !hasSeenIntro())
+  const [showIntro, setShowIntro] = useState(true)
 
   useEffect(() => {
     const replay = () => setShowIntro(true)
@@ -54,10 +59,7 @@ export default function App() {
     return () => window.removeEventListener(REPLAY_INTRO_EVENT, replay)
   }, [])
 
-  const finishIntro = useCallback(() => {
-    markIntroSeen()
-    setShowIntro(false)
-  }, [])
+  const finishIntro = useCallback(() => setShowIntro(false), [])
 
   return (
     <>
