@@ -21,7 +21,7 @@ export function ReviewsSection({ limit }: { limit?: number }) {
         centered
       />
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {shown.map((review, i) => (
           <figure key={review.id} className="card flex flex-col gap-5">
             <Quote size={28} style={{ color: 'var(--accent)' }} aria-hidden="true" />

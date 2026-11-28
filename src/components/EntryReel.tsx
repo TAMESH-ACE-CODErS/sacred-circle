@@ -119,7 +119,7 @@ export function EntryReel({ onEnter }: Props) {
               transition={{ duration }}
               className="flex flex-col items-center"
             >
-              <p className="mb-8 text-sm font-semibold uppercase tracking-[0.3em]" style={{ color: '#8A6B45' }}>
+              <p className="mb-8 text-base font-semibold uppercase tracking-[0.3em]" style={{ color: '#8A6B45' }}>
                 Sacred Circle
               </p>
               <div className="min-h-[10rem] sm:min-h-[13rem]" aria-live="polite">
@@ -168,7 +168,7 @@ export function EntryReel({ onEnter }: Props) {
               transition={{ duration: reducedMotion ? 0.01 : 0.7 }}
               className="w-full"
             >
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em]" style={{ color: '#8A6B45' }}>
+              <p className="mb-3 text-base font-semibold uppercase tracking-[0.3em]" style={{ color: '#8A6B45' }}>
                 {t('intro.storyEyebrow')}
               </p>
               <h2 className="font-display text-3xl sm:text-4xl">{t('intro.storyTitle')}</h2>
@@ -200,7 +200,7 @@ export function EntryReel({ onEnter }: Props) {
                     className="rounded-3xl border p-5 text-left sm:p-6"
                     style={{ background: '#FFFDF8', borderColor: '#E4D8C5' }}
                   >
-                    <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: '#8A6B45' }}>
+                    <p className="text-base font-semibold uppercase tracking-wide" style={{ color: '#8A6B45' }}>
                       {t(card.figure)}
                     </p>
                     <h3 className="mt-2 font-display text-xl">{t(card.title)}</h3>

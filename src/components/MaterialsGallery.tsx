@@ -65,7 +65,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                 key={item}
                 type="button"
                 onClick={() => setCategory(item)}
-                className="min-h-[48px] rounded-full border px-5 text-sm font-medium transition-colors"
+                className="min-h-[48px] rounded-full border px-5 text-base font-medium transition-colors"
                 style={{
                   borderColor: 'var(--border)',
                   background: item === category ? 'var(--text)' : 'transparent',
@@ -80,7 +80,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
         </div>
       )}
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence mode="popLayout">
           {shown.map((item) => {
             const open = unlocked[item.id]
@@ -110,7 +110,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                     <div className="soft-panel aspect-video !rounded-none" />
                   )}
                   <span
-                    className="absolute left-4 top-4 inline-flex min-h-[36px] items-center gap-2 rounded-full px-3 text-xs font-semibold"
+                    className="absolute left-4 top-4 inline-flex min-h-[36px] items-center gap-2 rounded-full px-3 text-base font-semibold"
                     style={{ background: 'var(--surface)', color: 'var(--text)' }}
                   >
                     <MediaIcon mediaType={open?.media_type ?? item.media_type} />
@@ -133,7 +133,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                         poster={item.thumbnail_url ?? undefined}
                       />
                       {isYouTube && !open && (
-                        <p className="mt-2 text-xs" style={{ color: 'var(--muted)' }}>
+                        <p className="mt-2 text-base" style={{ color: 'var(--muted)' }}>
                           {t('materials.fallback')}
                         </p>
                       )}
@@ -173,7 +173,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
         />
       )}
 
-      <p className="mt-10 flex items-center justify-center gap-2 text-sm" style={{ color: 'var(--muted)' }}>
+      <p className="mt-10 flex items-center justify-center gap-2 text-base" style={{ color: 'var(--muted)' }}>
         <UnlockKeyhole size={16} />
         {t('materials.pinFooter')}
       </p>

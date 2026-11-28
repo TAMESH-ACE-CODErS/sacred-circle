@@ -46,14 +46,14 @@ export function HomePage() {
       <SundaySection />
       <EventsSection />
 
-      <section className="section-shell !pt-8">
+      <section className="section-shell !pt-12">
         <SectionHeading
           eyebrow={t('paths.eyebrow')}
           title={t('paths.title')}
           description={t('paths.description')}
           centered
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {paths.map((path) => (
             <article key={path.title} className="card overflow-hidden !p-0">
               <img src={path.image} alt={t(path.alt)} loading="lazy" className="aspect-[4/3] w-full object-cover" />
@@ -72,7 +72,7 @@ export function HomePage() {
 
       <CommunitySection />
 
-      <section id="materials" className="section-shell !pt-8">
+      <section id="materials" className="section-shell !pt-12">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading
             eyebrow={t('materialsHome.eyebrow')}
@@ -90,7 +90,7 @@ export function HomePage() {
 
       <FaqSection />
 
-      <section className="section-shell !pt-4">
+      <section className="section-shell !pt-12">
         <div className="soft-panel flex flex-col items-start gap-6 text-center sm:items-center">
           <div className="flex-1">
             <p className="eyebrow">{t('cta.eyebrow')}</p>

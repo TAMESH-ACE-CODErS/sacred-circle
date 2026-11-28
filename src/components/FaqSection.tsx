@@ -6,7 +6,7 @@ export function FaqSection() {
   const { t } = useLanguage()
 
   return (
-    <section id="faq" className="section-shell !pt-8">
+    <section id="faq" className="section-shell !pt-12">
       <SectionHeading
         eyebrow={t('faq.eyebrow')}
         title={t('faq.title')}

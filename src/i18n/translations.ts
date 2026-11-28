@@ -52,6 +52,8 @@ export const en = {
   'nav.reviews': 'Reviews',
   'nav.contact': 'Contact',
   'nav.admin': 'Admin',
+  'nav.menu': 'Menu',
+  'nav.closeMenu': 'Close menu',
 
   'announcements.eyebrow': 'Notes from the circle',
   'announcements.title': 'Announcements',
@@ -415,7 +417,6 @@ export const en = {
     'Edit, hide or permanently delete anything visitors have shared. The Google Sheet is updated immediately.',
   'admin.keyLabel': 'Admin key',
   'admin.keyHelp': 'Enter the secret from Apps Script > Script Properties. It is kept only for this browser tab.',
-  'admin.unlock': 'Open the quotes board',
   'admin.unlocked': 'Quotes board unlocked',
   'admin.wrongKey': 'That key was not accepted. Please check it and try again.',
   'admin.keyRequired': 'Enter your admin key first.',
@@ -428,7 +429,6 @@ export const en = {
   'admin.listLoading': 'Opening the quotes board…',
   'admin.listError': 'Could not load quotes. Check the Script URL and your key.',
   'admin.noQuotes': 'No quotes have been shared yet.',
-  'admin.confirmDelete': 'Permanently delete this reflection?',
   'admin.saved': 'Saved to the Google Sheet.',
   'admin.deleted': 'Deleted from the Google Sheet.',
 } as const
@@ -493,6 +493,8 @@ export const hi: Record<TranslationKey, string> = {
   'nav.reviews': 'अनुभव',
   'nav.contact': 'संपर्क',
   'nav.admin': 'प्रशासन',
+  'nav.menu': 'मेन्यू',
+  'nav.closeMenu': 'मेन्यू बंद करें',
 
   'announcements.eyebrow': 'सर्कल की जानकारी',
   'announcements.title': 'घोषणाएँ',
@@ -823,7 +825,6 @@ export const hi: Record<TranslationKey, string> = {
   'admin.quotesDescription': 'आगंतुकों द्वारा साझा कुछ भी संपादित, छिपाएँ या हमेशा के लिए हटाएँ। Google Sheet तुरंत अपडेट होगा।',
   'admin.keyLabel': 'प्रशासक कुंजी',
   'admin.keyHelp': 'Apps Script > Script Properties वाली गुप्त कुंजी डालें। यह केवल इसी ब्राउज़र टैब में रहती है।',
-  'admin.unlock': 'उद्धरण बोर्ड खोलें',
   'admin.unlocked': 'उद्धरण बोर्ड खुल गया',
   'admin.wrongKey': 'यह कुंजी स्वीकार नहीं हुई। जाँचकर फिर कोशिश करें।',
   'admin.keyRequired': 'पहले अपनी प्रशासक कुंजी डालें।',
@@ -836,7 +837,6 @@ export const hi: Record<TranslationKey, string> = {
   'admin.listLoading': 'उद्धरण बोर्ड खुल रहा है…',
   'admin.listError': 'उद्धरण लोड नहीं हो सके। Script URL और कुंजी जाँचें।',
   'admin.noQuotes': 'अभी तक कोई उद्धरण साझा नहीं हुआ।',
-  'admin.confirmDelete': 'क्या यह चिंतन हमेशा के लिए हटाएँ?',
   'admin.saved': 'Google Sheet में सहेजा गया।',
   'admin.deleted': 'Google Sheet से हटाया गया।',
 }

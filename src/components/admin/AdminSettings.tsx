@@ -87,7 +87,7 @@ export function AdminSettings() {
         <AdminGrid>
           <AdminField label="Navigation items (JSON)" full>
             <textarea
-              className="field min-h-[220px] font-mono !text-sm"
+              className="field min-h-[220px] font-mono !text-base"
               value={navText}
               onChange={(e) => setNavText(e.target.value)}
               spellCheck={false}
@@ -109,7 +109,7 @@ export function AdminSettings() {
             <button className="btn-primary" type="submit" disabled={saving}>
               {saving ? 'Saving…' : 'Save settings'}
             </button>
-            {message && <span className="text-sm" role="status">{message}</span>}
+            {message && <span className="text-base" role="status">{message}</span>}
           </AdminActions>
         </AdminGrid>
       </form>

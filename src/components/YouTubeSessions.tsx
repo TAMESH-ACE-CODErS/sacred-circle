@@ -49,7 +49,7 @@ export function YouTubeSessions() {
   }, [active])
 
   return (
-    <section id="videos" className="section-shell !pt-8">
+    <section id="videos" className="section-shell !pt-12">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow={t('videos.eyebrow')}
@@ -77,7 +77,7 @@ export function YouTubeSessions() {
       )}
 
       {status === 'ready' && (
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {videos.slice(0, 6).map((video) => (
             <article key={video.videoId} className="card overflow-hidden !p-0">
               <button

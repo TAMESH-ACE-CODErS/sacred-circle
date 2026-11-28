@@ -4,7 +4,7 @@ One Google Sheet, one Apps Script web app, three tabs. No paid API, no database,
 
 ## 1. Create the Sheet
 
-1. Make a Google Sheet with three tabs: `Comments`, `Announcements`, `Events`.
+1. Make a Google Sheet with exactly three tabs: `Comments`, `Announcements`, `Events`. Remove any default `Sheet1` tab so there are no extras.
 2. Open **Extensions → Apps Script**, replace `Code.gs` with the file in this folder, and save.
 3. The script creates or repairs these exact headers on first run:
 

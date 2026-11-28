@@ -121,7 +121,7 @@ export function SheetAnnouncements({ adminPin }: Props) {
             meta={`${row.is_pinned ? `${t('announcements.pinned')} · ` : ''}${row.date}`}
             actions={
               <button
-                className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm"
+                className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base"
                 onClick={() => void remove(row.id)}
                 aria-label={`${t('common.delete')}: ${row.title}`}
               >
@@ -242,7 +242,7 @@ export function SheetEvents({ adminPin }: Props) {
             meta={`${row.date} · ${row.time || '2 Hrs'}`}
             actions={
               <button
-                className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm"
+                className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base"
                 onClick={() => void remove(row.id)}
                 aria-label={`${t('common.delete')}: ${row.title}`}
               >

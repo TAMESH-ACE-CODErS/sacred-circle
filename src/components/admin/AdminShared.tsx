@@ -16,7 +16,7 @@ export function AdminPanel({ title, description, children }: {
 }
 
 export function AdminGrid({ children }: { children: ReactNode }) {
-  return <div className="grid gap-5 sm:grid-cols-2">{children}</div>
+  return <div className="grid gap-6 lg:grid-cols-2">{children}</div>
 }
 
 export function AdminField({ label, children, full = false }: {
@@ -26,7 +26,7 @@ export function AdminField({ label, children, full = false }: {
 }) {
   return (
     <label className={`block ${full ? 'sm:col-span-2' : ''}`}>
-      <span className="mb-2 block text-sm font-semibold">{label}</span>
+      <span className="mb-2 block text-base font-semibold">{label}</span>
       {children}
     </label>
   )
@@ -48,7 +48,7 @@ export function AdminRow({ title, meta, actions }: {
     >
       <div className="min-w-0">
         <p className="font-medium">{title}</p>
-        <p className="mt-1 truncate text-sm" style={{ color: 'var(--muted)' }}>{meta}</p>
+        <p className="mt-1 truncate text-base" style={{ color: 'var(--muted)' }}>{meta}</p>
       </div>
       <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>
     </li>
@@ -62,7 +62,7 @@ export function AdminList({ children }: { children: ReactNode }) {
 export function AdminNotice({ children }: { children: ReactNode }) {
   return (
     <p
-      className="rounded-xl border px-4 py-3 text-sm"
+      className="rounded-xl border px-4 py-3 text-base"
       style={{ borderColor: 'var(--border)', background: 'var(--accent-soft)' }}
     >
       {children}

@@ -45,7 +45,7 @@ export function MediaPlayer({ url, mediaType, title, poster }: Props) {
   if (mediaType === 'audio') {
     return (
       <div className="soft-panel !p-5">
-        <div className="mb-3 flex items-center gap-2 text-sm" style={{ color: 'var(--muted)' }}>
+        <div className="mb-3 flex items-center gap-2 text-base" style={{ color: 'var(--muted)' }}>
           <MediaIcon mediaType="audio" />
           <span>Audio · keep the volume gentle</span>
         </div>

@@ -125,7 +125,7 @@ export function PinGate({ material, open, onClose, onUnlocked }: Props) {
 
             <form onSubmit={verify} className="mt-6 space-y-4">
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold">PIN code</span>
+                <span className="mb-2 block text-base font-semibold">PIN code</span>
                 <div className="relative">
                   <KeyRound
                     size={18}
@@ -148,12 +148,12 @@ export function PinGate({ material, open, onClose, onUnlocked }: Props) {
               </label>
 
               {error && (
-                <p id="pin-error" role="alert" className="text-sm font-medium text-red-700 dark:text-red-300">
+                <p id="pin-error" role="alert" className="text-base font-medium text-red-700 dark:text-red-300">
                   {error}
                 </p>
               )}
               {!import.meta.env.VITE_SUPABASE_URL && (
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                <p className="text-base" style={{ color: 'var(--muted)' }}>
                   Demo mode: the sample recording uses the PIN from <code>VITE_DEMO_PIN</code>.
                 </p>
               )}

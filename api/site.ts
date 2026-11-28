@@ -16,6 +16,7 @@ export async function callSiteScript(
   params: Record<string, string> = {},
   payload?: Record<string, unknown>,
   scriptUrl = SCRIPT_URL,
+  adminPin = ADMIN_PIN,
 ): Promise<SiteBridgeResult> {
   if (!scriptUrl) {
     return {
@@ -25,10 +26,10 @@ export async function callSiteScript(
   }
 
   if (payload && ADMIN_ACTIONS.includes(String(payload.action ?? ''))) {
-    if (!ADMIN_PIN) {
+    if (!adminPin) {
       return { status: 503, body: { error: 'Admin PIN is not configured on the server.' } }
     }
-    if (String(payload.adminPin ?? '') !== ADMIN_PIN) {
+    if (String(payload.adminPin ?? '') !== adminPin) {
       return { status: 403, body: { error: 'Admin PIN not accepted.' } }
     }
   }

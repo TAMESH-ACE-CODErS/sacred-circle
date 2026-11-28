@@ -62,7 +62,7 @@ export function CommunityPage() {
           description={t('communityPage.channelsDescription')}
           centered
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {channels.map(({ icon: Icon, title, text, label, href }) => (
             <article key={title} className="card flex flex-col">
               <span
@@ -73,7 +73,7 @@ export function CommunityPage() {
               </span>
               <h3 className="mt-5 font-display text-2xl">{t(title)}</h3>
               <p className="mt-3 flex-1 text-base" style={{ color: 'var(--muted)' }}>{t(text)}</p>
-              <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="btn-secondary mt-6 w-full !text-sm">
+              <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="btn-secondary mt-6 w-full !text-base">
                 {label} <ArrowRight size={17} />
               </a>
             </article>
@@ -81,8 +81,8 @@ export function CommunityPage() {
         </div>
       </section>
 
-      <section className="section-shell !pt-4">
-        <div className="soft-panel grid items-center gap-8 lg:grid-cols-2">
+      <section className="section-shell !pt-12">
+        <div className="soft-panel grid items-center gap-6 lg:grid-cols-2">
           <div>
             <p className="eyebrow">{t('communityPage.fromChannelEyebrow')}</p>
             <h2 className="!text-3xl">{t('communityPage.fromChannelTitle')}</h2>

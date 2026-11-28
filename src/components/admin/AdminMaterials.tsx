@@ -180,13 +180,13 @@ export function AdminMaterials() {
               {saving ? 'Saving…' : editingId ? 'Save changes' : 'Add material'}
             </button>
             {editingId && <button className="btn-secondary" type="button" onClick={reset}>Cancel</button>}
-            {message && <span className="text-sm" role="status">{message}</span>}
+            {message && <span className="text-base" role="status">{message}</span>}
           </AdminActions>
         </AdminGrid>
       </form>
 
-      {error && <p className="mt-5 text-sm text-red-700 dark:text-red-300">{error}</p>}
-      {loading && <p className="mt-5 text-sm" style={{ color: 'var(--muted)' }}>Loading…</p>}
+      {error && <p className="mt-5 text-base text-red-700 dark:text-red-300">{error}</p>}
+      {loading && <p className="mt-5 text-base" style={{ color: 'var(--muted)' }}>Loading…</p>}
 
       <AdminList>
         {rows.map((row) => (
@@ -198,7 +198,7 @@ export function AdminMaterials() {
               <>
                 {row.media_url && (
                   <a
-                    className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm"
+                    className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base"
                     href={row.media_url}
                     target="_blank"
                     rel="noreferrer"
@@ -206,11 +206,11 @@ export function AdminMaterials() {
                     <ExternalLink size={15} /> Open
                   </a>
                 )}
-                <button className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm" onClick={() => edit(row)}>
+                <button className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base" onClick={() => edit(row)}>
                   <Pencil size={15} /> Edit
                 </button>
                 <button
-                  className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm"
+                  className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base"
                   onClick={() => remove(row.id)}
                   aria-label={`Delete material: ${row.title}`}
                 >

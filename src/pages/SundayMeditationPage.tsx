@@ -46,14 +46,14 @@ export function SundayMeditationPage() {
 
       <SundaySection />
 
-      <section className="section-shell !pt-4">
+      <section className="section-shell !pt-12">
         <SectionHeading
           eyebrow={t('sundayPage.expectEyebrow')}
           title={t('sundayPage.expectTitle')}
           description={t('sundayPage.expectDescription')}
           centered
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-6 lg:grid-cols-4">
           {steps.map((step) => (
             <article key={step.number} className="card">
               <p className="font-display text-3xl" style={{ color: 'var(--accent)' }}>{step.number}</p>
@@ -65,7 +65,7 @@ export function SundayMeditationPage() {
       </section>
 
       <section className="section-shell">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <SectionHeading
             eyebrow={t('faq.eyebrow')}
             title={t('sundayPage.faqTitle')}

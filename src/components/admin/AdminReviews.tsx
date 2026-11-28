@@ -139,13 +139,13 @@ export function AdminReviews() {
               {saving ? 'Saving…' : editingId ? 'Save changes' : 'Add experience'}
             </button>
             {editingId && <button className="btn-secondary" type="button" onClick={reset}>Cancel</button>}
-            {message && <span className="text-sm" role="status">{message}</span>}
+            {message && <span className="text-base" role="status">{message}</span>}
           </AdminActions>
         </AdminGrid>
       </form>
 
-      {error && <p className="mt-5 text-sm text-red-700 dark:text-red-300">{error}</p>}
-      {loading && <p className="mt-5 text-sm" style={{ color: 'var(--muted)' }}>Loading…</p>}
+      {error && <p className="mt-5 text-base text-red-700 dark:text-red-300">{error}</p>}
+      {loading && <p className="mt-5 text-base" style={{ color: 'var(--muted)' }}>Loading…</p>}
 
       <AdminList>
         {rows.map((row) => (
@@ -155,11 +155,11 @@ export function AdminReviews() {
             meta={`${row.is_visible ? 'Visible' : 'Hidden'} · ${row.review_text.slice(0, 110)}…`}
             actions={
               <>
-                <button className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm" onClick={() => edit(row)}>
+                <button className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base" onClick={() => edit(row)}>
                   <Pencil size={15} /> Edit
                 </button>
                 <button
-                  className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-sm"
+                  className="btn-secondary !min-h-[44px] !px-4 !py-2 !text-base"
                   onClick={() => remove(row.id)}
                   aria-label={`Delete experience from ${row.reviewer_name}`}
                 >

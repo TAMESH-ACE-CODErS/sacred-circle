@@ -14,7 +14,7 @@ export function PageHero({ eyebrow, title, description, children, image, imageAl
   return (
     <section className="relative overflow-hidden border-b" style={{ borderColor: 'var(--border)' }}>
       <div className="hero-grain absolute inset-0" aria-hidden="true" />
-      <div className="section-shell relative grid gap-10 py-14 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div className="section-shell relative grid gap-8 py-12 sm:gap-10 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

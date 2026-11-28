@@ -26,7 +26,7 @@ export function HeroReel() {
         aria-hidden="true"
       />
 
-      <div className="section-shell relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="section-shell relative grid items-center gap-8 py-12 sm:gap-12 sm:py-20 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
           <p className="eyebrow">{t('hero.eyebrow')}</p>
 
@@ -65,7 +65,7 @@ export function HeroReel() {
             </a>
           </div>
 
-          <p className="mt-6 text-sm font-medium" style={{ color: 'var(--accent)' }}>
+          <p className="mt-6 text-base font-medium" style={{ color: 'var(--accent)' }}>
             {t('hero.freeNote')}
           </p>
         </div>
@@ -79,7 +79,7 @@ export function HeroReel() {
           />
           <div className="card absolute -bottom-6 left-4 right-4 !rounded-2xl !p-4 text-center sm:left-8 sm:right-8">
             <p className="font-display text-lg">{t('hero.founders')}</p>
-            <p className="text-sm" style={{ color: 'var(--muted)' }}>{t('hero.guideRole')}</p>
+            <p className="text-base" style={{ color: 'var(--muted)' }}>{t('hero.guideRole')}</p>
           </div>
         </div>
       </div>

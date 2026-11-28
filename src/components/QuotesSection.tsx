@@ -78,7 +78,7 @@ export function QuotesSection() {
   }
 
   return (
-    <section id="quotes" className="section-shell !pt-8">
+    <section id="quotes" className="section-shell !pt-12">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow={t('quotes.eyebrow')}
@@ -96,7 +96,7 @@ export function QuotesSection() {
         </button>
       </div>
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="card">
           <h3 className="font-display text-2xl">{t('quotes.post')}</h3>
           <form onSubmit={post} className="mt-6 space-y-5">

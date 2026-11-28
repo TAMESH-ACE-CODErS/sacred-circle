@@ -31,7 +31,7 @@ export function EventsSection() {
   }, [load])
 
   return (
-    <section id="events" className="section-shell !pt-8">
+    <section id="events" className="section-shell !pt-12">
       <SectionHeading
         eyebrow={t('events.eyebrow')}
         title={t('events.title')}

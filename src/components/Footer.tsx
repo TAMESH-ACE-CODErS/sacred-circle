@@ -17,8 +17,8 @@ export function Footer() {
   }
 
   return (
-    <footer id="contact" className="mt-20 border-t" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
+    <footer id="contact" className="mt-12 border-t sm:mt-20" style={{ background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
+      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-12 sm:gap-10 sm:px-8 lg:grid-cols-3">
         <div>
           <div className="flex items-center gap-3">
             <img src="/favicon.svg" alt="" className="h-11 w-11" />
@@ -27,7 +27,7 @@ export function Footer() {
           <p className="mt-4 max-w-sm" style={{ color: 'var(--muted)' }}>
             {t('footer.description')}
           </p>
-          <p className="mt-4 text-sm" style={{ color: 'var(--accent)' }}>
+          <p className="mt-4 text-base" style={{ color: 'var(--accent)' }}>
             {language === 'hi' ? t('sunday.time') : sundayTime}
           </p>
         </div>
@@ -61,7 +61,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t px-5 pb-28 pt-6 text-center text-sm sm:pb-24" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+      <div className="border-t px-5 pb-28 pt-6 text-center text-base sm:pb-24" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
         <p>© {new Date().getFullYear()} Sacred Circle. {t('footer.copyright')}</p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
           <button type="button" onClick={replayIntro} className="btn-link !min-h-[48px] !text-base">

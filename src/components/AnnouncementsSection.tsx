@@ -41,7 +41,7 @@ export function AnnouncementsSection() {
   }, [load])
 
   return (
-    <section id="announcements" className="section-shell !pt-8">
+    <section id="announcements" className="section-shell !pt-12">
       <SectionHeading
         eyebrow={t('announcements.eyebrow')}
         title={t('announcements.title')}
@@ -67,7 +67,7 @@ export function AnnouncementsSection() {
               <h3 className="font-display text-2xl">{row.title}</h3>
               {row.is_pinned && (
                 <span
-                  className="inline-flex min-h-[36px] items-center gap-2 rounded-full px-3 text-sm font-semibold"
+                  className="inline-flex min-h-[40px] items-center gap-2 rounded-full px-3 text-base font-semibold"
                   style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}
                 >
                   <Pin size={16} aria-hidden="true" />

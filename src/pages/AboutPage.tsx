@@ -32,14 +32,14 @@ export function AboutPage() {
 
       <AboutSection />
 
-      <section className="section-shell !pt-4">
+      <section className="section-shell !pt-12">
         <SectionHeading
           eyebrow={t('aboutPage.principlesEyebrow')}
           title={t('aboutPage.principlesTitle')}
           description={t('aboutPage.principlesDescription')}
           centered
         />
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {principles.map(({ icon: Icon, title, text }) => (
             <article key={title} className="card flex gap-5">
               <span
@@ -58,7 +58,7 @@ export function AboutPage() {
       </section>
 
       <section className="section-shell">
-        <div className="soft-panel grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="soft-panel grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <p className="eyebrow">{t('aboutPage.storyEyebrow')}</p>
             <p className="font-display text-2xl leading-snug sm:text-3xl">
@@ -67,7 +67,7 @@ export function AboutPage() {
           </div>
           <div className="shrink-0">
             <p className="text-lg font-medium">{language === 'hi' ? t('sunday.time') : 'Every Sunday, 4:00 PM IST'}</p>
-            <p className="mt-1 text-sm" style={{ color: 'var(--muted)' }}>
+            <p className="mt-1 text-base" style={{ color: 'var(--muted)' }}>
               {t('common.online')} · {t('common.free')} · {t('common.everyoneWelcome')}
             </p>
           </div>

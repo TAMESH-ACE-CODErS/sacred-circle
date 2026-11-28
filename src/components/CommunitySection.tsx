@@ -124,7 +124,7 @@ export function CommunitySection() {
   }
 
   return (
-    <section id="comments" className="section-shell !pt-8">
+    <section id="comments" className="section-shell !pt-12">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow={t('comments.eyebrow')}
@@ -142,7 +142,7 @@ export function CommunitySection() {
         </button>
       </div>
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="card">
           <h3 className="font-display text-2xl">{t('comments.post')}</h3>
           <form onSubmit={share} className="mt-6 space-y-5">

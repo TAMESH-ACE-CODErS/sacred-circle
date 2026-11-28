@@ -64,7 +64,7 @@ function quotesDevApi(scriptUrl) {
     };
 }
 // Mirrors the Vercel /api/site function during `npm run dev`.
-function siteDevApi(scriptUrl) {
+function siteDevApi(scriptUrl, adminPin) {
     return {
         name: 'site-api-dev',
         configureServer(server) {
@@ -76,7 +76,7 @@ function siteDevApi(scriptUrl) {
                     query[key] = value;
                 });
                 const payload = method === 'POST' ? await readJsonBody(devRequest) : undefined;
-                const result = await callSiteScript(query, payload, scriptUrl);
+                const result = await callSiteScript(query, payload, scriptUrl, adminPin);
                 response.setHeader('Content-Type', 'application/json; charset=utf-8');
                 response.setHeader('Cache-Control', method === 'GET' ? 'public, s-maxage=60' : 'no-store');
                 response.statusCode = result.status;
@@ -89,8 +89,9 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const quotesScriptUrl = env.VITE_QUOTES_SCRIPT_URL || env.QUOTES_SCRIPT_URL || '';
     const siteScriptUrl = env.VITE_SACRED_SHEET_URL || env.SACRED_SHEET_URL || '';
+    const siteAdminPin = env.VITE_ADMIN_PIN || env.ADMIN_PIN || '';
     return {
-        plugins: [react(), youtubeDevApi, quotesDevApi(quotesScriptUrl), siteDevApi(siteScriptUrl)],
+        plugins: [react(), youtubeDevApi, quotesDevApi(quotesScriptUrl), siteDevApi(siteScriptUrl, siteAdminPin)],
         server: { port: 5173 },
         build: {
             rollupOptions: {
