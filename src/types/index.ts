@@ -1,4 +1,20 @@
 export type { YouTubeFeed, YouTubeVideo } from './youtube'
+export type {
+  AnnouncementEventFeed,
+  AudioInput,
+  AudioPinResult,
+  AudioSession,
+  CommunityFeed,
+  CommunityPost,
+  CommunityPostInput,
+  CommunityReply,
+  CommunityReplyInput,
+  DeviceType,
+  LanguageCode,
+  SundayCheckinInput,
+  VisitorEvent,
+  VisitorEventType,
+} from './sheet'
 
 export type NavItem = {
   label: string

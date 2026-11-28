@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 
 const PREVIEW_AT_SECONDS = 1.5
 
@@ -60,6 +61,7 @@ export function SmartVideo({ src, poster, title, className }: Props) {
       src={previewSource(src)}
       onLoadedMetadata={seekToPreview}
       onLoadedData={seekToPreview}
+      onPlay={() => trackVisitorEvent('video_play', { eventDetail: title })}
     >
       Your browser does not support video playback.
     </video>

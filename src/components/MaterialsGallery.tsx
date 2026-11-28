@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { MediaPlayer } from './MediaPlayer'
 import { MediaIcon } from './MediaIcon'
 import { PinGate, type UnlockedMaterial } from './PinGate'
+import { VideoThumbnail } from './VideoThumbnail'
 import type { Material } from '../types'
 
 type Props = {
@@ -99,16 +100,10 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                 className="card flex flex-col overflow-hidden !p-0"
               >
                 <div className="relative">
-                  {item.thumbnail_url ? (
-                    <img
-                      src={item.thumbnail_url}
-                      alt={`Cover image for ${item.title}`}
-                      loading="lazy"
-                      className="aspect-video w-full object-cover"
-                    />
-                  ) : (
-                    <div className="soft-panel aspect-video !rounded-none" />
-                  )}
+                  <VideoThumbnail
+                    src={item.thumbnail_url || (open?.media_url ?? item.media_url ?? '')}
+                    alt={`Cover image for ${item.title}`}
+                  />
                   <span
                     className="absolute left-4 top-4 inline-flex min-h-[36px] items-center gap-2 rounded-full px-3 text-base font-semibold"
                     style={{ background: 'var(--surface)', color: 'var(--text)' }}

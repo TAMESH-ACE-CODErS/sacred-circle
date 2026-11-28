@@ -10,7 +10,12 @@ const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default:
 const SundayMeditationPage = lazy(() =>
   import('./pages/SundayMeditationPage').then((m) => ({ default: m.SundayMeditationPage })),
 )
+const AnnouncementsPage = lazy(() =>
+  import('./pages/AnnouncementsPage').then((m) => ({ default: m.AnnouncementsPage })),
+)
+const EventsPage = lazy(() => import('./pages/EventsPage').then((m) => ({ default: m.EventsPage })))
 const MaterialsPage = lazy(() => import('./pages/MaterialsPage').then((m) => ({ default: m.MaterialsPage })))
+const AudioPage = lazy(() => import('./pages/AudioPage').then((m) => ({ default: m.AudioPage })))
 const ReviewsPage = lazy(() => import('./pages/ReviewsPage').then((m) => ({ default: m.ReviewsPage })))
 const CommunityPage = lazy(() => import('./pages/CommunityPage').then((m) => ({ default: m.CommunityPage })))
 const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })))
@@ -20,7 +25,10 @@ const pageTitles: Record<string, string> = {
   '/': 'Sacred Circle — Free Sunday Meditation & Healing',
   '/about': 'About — Sacred Circle',
   '/sunday-meditation': 'Sunday Meditation — Sacred Circle',
-  '/materials': 'Materials — Sacred Circle',
+  '/announcements': 'Announcements — Sacred Circle',
+  '/events': 'Events — Sacred Circle',
+  '/materials': 'Library — Sacred Circle',
+  '/audio': 'Audio — Sacred Circle',
   '/reviews': 'Experiences — Sacred Circle',
   '/community': 'Community — Sacred Circle',
   '/admin': 'Admin Board — Sacred Circle',
@@ -52,6 +60,7 @@ function RouteFallback() {
 
 export default function App() {
   const [showIntro, setShowIntro] = useState(true)
+  const [introDestination, setIntroDestination] = useState<string | null>(null)
 
   useEffect(() => {
     const replay = () => setShowIntro(true)
@@ -59,7 +68,19 @@ export default function App() {
     return () => window.removeEventListener(REPLAY_INTRO_EVENT, replay)
   }, [])
 
-  const finishIntro = useCallback(() => setShowIntro(false), [])
+  useEffect(() => {
+    if (showIntro || !introDestination) return
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(introDestination)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      setIntroDestination(null)
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [showIntro, introDestination])
+
+  const finishIntro = useCallback((destination?: string) => {
+    setIntroDestination(destination ?? null)
+    setShowIntro(false)
+  }, [])
 
   return (
     <>
@@ -76,11 +97,14 @@ export default function App() {
       >
         <Suspense fallback={<RouteFallback />}>
           <Routes>
-            <Route element={<Layout />}>
+            <Route element={<Layout connectEnabled={!showIntro} />}>
               <Route index element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/sunday-meditation" element={<SundayMeditationPage />} />
+              <Route path="/announcements" element={<AnnouncementsPage />} />
+              <Route path="/events" element={<EventsPage />} />
               <Route path="/materials" element={<MaterialsPage />} />
+              <Route path="/audio" element={<AudioPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/admin" element={<AdminPage />} />

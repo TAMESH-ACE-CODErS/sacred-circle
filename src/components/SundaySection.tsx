@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { CalendarDays, Clock3, HeartHandshake, Video } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { SectionHeading } from './SectionHeading'
+import { SundayCheckinForm } from './SundayCheckinForm'
 import { mediaManifest } from '../config/mediaManifest'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 import { useLanguage } from '../context/LanguageContext'
 import { useSiteContent } from '../hooks/useSiteContent'
 import { WHATSAPP_URL } from '../config/site'
@@ -58,7 +60,13 @@ export function SundaySection() {
               ))}
             </div>
             <div className="mt-10 flex flex-wrap gap-4">
-              <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-primary">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary"
+                onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Sunday section' })}
+              >
                 {t('sunday.zoom')}
               </a>
               <Link to="/materials" className="btn-secondary">{t('sunday.library')}</Link>
@@ -66,6 +74,8 @@ export function SundaySection() {
           </div>
         </div>
       </div>
+
+      <SundayCheckinForm />
     </section>
   )
 }

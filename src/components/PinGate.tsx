@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { KeyRound, LockKeyhole, X } from 'lucide-react'
+import { KeyRound, LockKeyhole } from 'lucide-react'
+import { BottomSheet } from './BottomSheet'
 import { supabase } from '../lib/supabase'
+import { verifyAudioPin } from '../lib/sheetApi'
+import { useLanguage } from '../context/LanguageContext'
 import type { Material } from '../types'
 
 export type UnlockedMaterial = {
@@ -22,25 +24,20 @@ export function PinGate({ material, open, onClose, onUnlocked }: Props) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (!open) return
     setPin('')
     setError('')
-    const timer = window.setTimeout(() => inputRef.current?.focus(), 100)
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.clearTimeout(timer)
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [open, onClose])
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 120)
+    return () => window.clearTimeout(timer)
+  }, [open])
 
   async function verify(event: FormEvent) {
     event.preventDefault()
-    if (!pin.trim() || busy) return
+    const value = pin.trim()
+    if (!value || busy) return
     setBusy(true)
     setError('')
 
@@ -48,123 +45,73 @@ export function PinGate({ material, open, onClose, onUnlocked }: Props) {
       if (supabase) {
         const { data, error: rpcError } = await supabase.rpc('verify_material_pin', {
           material_id: material.id,
-          input_pin: pin.trim(),
+          input_pin: value,
         })
-
         if (rpcError) throw rpcError
         const row = (data as UnlockedMaterial[] | null)?.[0]
         if (!row?.media_url) {
-          setError('That PIN did not match. Please try again.')
+          setError(t('pin.wrong'))
           return
         }
         onUnlocked(material, row)
-      } else if (
-        material.id === 'sunday-recording-demo' &&
-        pin.trim() === (import.meta.env.VITE_DEMO_PIN ?? '2468')
-      ) {
+        return
+      }
+
+      if (material.id === 'sunday-recording-demo' && value === (import.meta.env.VITE_DEMO_PIN ?? '2468')) {
         onUnlocked(material, {
           media_url: '/audio/aum-soft.wav',
           media_type: 'audio',
           title: material.title,
         })
-      } else {
-        setError('That PIN did not match. Please try again.')
+        return
       }
+
+      const result = await verifyAudioPin(material.id, value)
+      if (!result.ok || !result.audio_preview_url) {
+        setError(t('pin.wrong'))
+        return
+      }
+      onUnlocked(material, {
+        media_url: result.audio_preview_url,
+        media_type: 'audio',
+        title: result.title || material.title,
+      })
     } catch {
-      setError('We could not check the PIN just now. Please try again.')
+      setError(t('pin.error'))
     } finally {
       setBusy(false)
     }
   }
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-[60] grid place-items-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          style={{ background: 'rgba(12, 10, 18, 0.62)' }}
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) onClose()
-          }}
-        >
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="pin-title"
-            className="card relative w-full max-w-md !p-8"
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute right-3 top-3 inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full"
-              style={{ color: 'var(--muted)' }}
-              aria-label="Close PIN dialog"
-            >
-              <X size={20} />
-            </button>
-
-            <span
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full"
-              style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}
-            >
-              <LockKeyhole size={22} />
-            </span>
-            <h2 id="pin-title" className="mt-5 text-2xl">Enter the PIN</h2>
-            <p className="mt-2 text-base" style={{ color: 'var(--muted)' }}>
-              {material.title} is shared privately with participants. The PIN is checked securely;
-              it is never stored in your browser.
-            </p>
-
-            <form onSubmit={verify} className="mt-6 space-y-4">
-              <label className="block">
-                <span className="mb-2 block text-base font-semibold">PIN code</span>
-                <div className="relative">
-                  <KeyRound
-                    size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2"
-                    style={{ color: 'var(--muted)' }}
-                    aria-hidden="true"
-                  />
-                  <input
-                    ref={inputRef}
-                    type="password"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    value={pin}
-                    onChange={(event) => setPin(event.target.value)}
-                    className="field !pl-11"
-                    placeholder="Enter PIN"
-                    aria-describedby={error ? 'pin-error' : undefined}
-                  />
-                </div>
-              </label>
-
-              {error && (
-                <p id="pin-error" role="alert" className="text-base font-medium text-red-700 dark:text-red-300">
-                  {error}
-                </p>
-              )}
-              {!import.meta.env.VITE_SUPABASE_URL && (
-                <p className="text-base" style={{ color: 'var(--muted)' }}>
-                  Demo mode: the sample recording uses the PIN from <code>VITE_DEMO_PIN</code>.
-                </p>
-              )}
-
-              <button type="submit" className="btn-primary w-full" disabled={busy}>
-                {busy ? 'Checking…' : 'Open recording'}
-              </button>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <BottomSheet open={open} onClose={onClose} title={t('pin.title')} titleId="pin-title">
+      <p className="text-lg" style={{ color: 'var(--muted)' }}>
+        {t('pin.body').replace('{title}', material.title)}
+      </p>
+      <form onSubmit={(event) => void verify(event)} className="mt-6 space-y-5">
+        <label htmlFor="material-pin" className="block text-base font-semibold">{t('pin.label')}</label>
+        <div className="relative">
+          <KeyRound size={20} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted)' }} aria-hidden="true" />
+          <input
+            id="material-pin"
+            ref={inputRef}
+            className="field !h-14 !pl-12 !text-2xl"
+            type="password"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={20}
+            value={pin}
+            onChange={(event) => setPin(event.target.value)}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? 'pin-error' : undefined}
+          />
+        </div>
+        {error && <p id="pin-error" role="alert" className="text-base font-semibold text-red-800 dark:text-red-300">{error}</p>}
+        <button type="submit" className="btn-primary w-full !min-h-[56px]" disabled={busy || !pin.trim()}>
+          <LockKeyhole size={19} aria-hidden="true" />
+          {busy ? t('audio.checking') : t('pin.unlock')}
+        </button>
+      </form>
+    </BottomSheet>
   )
 }

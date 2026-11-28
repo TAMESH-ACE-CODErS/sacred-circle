@@ -7,9 +7,28 @@ declare const process: { env: Record<string, string | undefined> }
 export type SiteBridgeResult = { status: number; body: unknown }
 
 const SCRIPT_URL =
-  process.env.VITE_SACRED_SHEET_URL || process.env.SACRED_SHEET_URL || ''
-const ADMIN_PIN = process.env.VITE_ADMIN_PIN || process.env.ADMIN_PIN || ''
-const ADMIN_ACTIONS = ['announcement_create', 'announcement_delete', 'event_create', 'event_delete']
+  process.env.VITE_SHEET_API_URL ||
+  process.env.VITE_SACRED_SHEET_URL ||
+  process.env.SHEET_API_URL ||
+  process.env.SACRED_SHEET_URL ||
+  ''
+const ADMIN_PIN =
+  process.env.VITE_ADMIN_PIN ||
+  process.env.ADMIN_PIN ||
+  process.env.VITE_ADMIN_KEY ||
+  process.env.ADMIN_KEY ||
+  ''
+const ADMIN_ACTIONS = [
+  'announcement_create',
+  'announcement_delete',
+  'event_create',
+  'event_delete',
+  'audio_create',
+  'audio_delete',
+  'audio_sync_drive',
+  'upsert_audio',
+  'delete_row',
+]
 
 /** Calls the Apps Script action and normalises its response for the browser. */
 export async function callSiteScript(
@@ -21,7 +40,16 @@ export async function callSiteScript(
   if (!scriptUrl) {
     return {
       status: 200,
-      body: { comments: [], announcements: [], events: [], source: 'unconfigured' },
+      body: {
+        ok: true,
+        posts: [],
+        comments: [],
+        audios: [],
+        sessions: [],
+        announcements: [],
+        events: [],
+        source: 'unconfigured',
+      },
     }
   }
 
@@ -29,8 +57,8 @@ export async function callSiteScript(
     if (!adminPin) {
       return { status: 503, body: { error: 'Admin PIN is not configured on the server.' } }
     }
-    if (String(payload.adminPin ?? '') !== adminPin) {
-      return { status: 403, body: { error: 'Admin PIN not accepted.' } }
+    if (String(payload.adminKey ?? payload.adminPin ?? '') !== adminPin) {
+      return { status: 403, body: { error: 'Admin key not accepted.' } }
     }
   }
 

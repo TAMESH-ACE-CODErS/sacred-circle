@@ -3,6 +3,7 @@ import { Mail, MessageCircle, Youtube } from 'lucide-react'
 import { useSiteContent } from '../hooks/useSiteContent'
 import { useLanguage } from '../context/LanguageContext'
 import { defaultNavItems, routeSectionMap, siteSections } from '../config/navigation'
+import { CONNECT_FORM_URL } from '../config/site'
 import { replayIntro } from '../lib/intro'
 
 export function Footer() {
@@ -37,7 +38,7 @@ export function Footer() {
           <ul className="mt-4 space-y-1">
             {navItems.map((item) => (
               <li key={item.href}>
-                <Link to={item.href} className="inline-flex min-h-[44px] items-center hover:opacity-70">
+                <Link to={item.href} className="inline-flex min-h-[48px] min-w-[48px] items-center hover:opacity-70">
                   {navLabel(item.label, item.href)}
                 </Link>
               </li>
@@ -56,6 +57,9 @@ export function Footer() {
             </a>
             <a href={`mailto:${contact.email}`} className="btn-link w-full !justify-start">
               <Mail size={20} /> {contact.email}
+            </a>
+            <a href={CONNECT_FORM_URL} target="_blank" rel="noreferrer" className="btn-secondary w-full !text-base">
+              {t('connect.stayConnected')}
             </a>
           </div>
         </div>

@@ -1,76 +1,107 @@
-import type { CommunityComment, SheetAnnouncement, SheetEvent } from '../types'
-
-type SiteResponse = {
-  comments?: CommunityComment[]
-  announcements?: SheetAnnouncement[]
-  events?: SheetEvent[]
-  comment?: CommunityComment
-  announcement?: SheetAnnouncement
-  event?: SheetEvent
-  error?: string
-  source?: string
-}
+import {
+  createCommunityComment,
+  createCommunityPost,
+  getAnnouncementsEvents,
+  getAudios,
+  getCommunity,
+} from './sheetApi'
+import type {
+  AudioSession,
+  CommunityComment,
+  CommunityPost,
+  CommunityPostInput,
+  CommunityReply,
+  CommunityReplyInput,
+  SundayCheckinInput,
+} from '../types'
 
 export type SiteFeed<T> = {
   rows: T[]
   unconfigured: boolean
 }
 
-async function readJson(response: Response): Promise<SiteResponse> {
-  const data = (await response.json().catch(() => ({}))) as SiteResponse
-  if (!response.ok || data.error) throw new Error(data.error ?? 'The community sheet is unavailable.')
+async function post(payload: Record<string, unknown>): Promise<{ error?: string }> {
+  const response = await fetch('/api/site', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const data = (await response.json().catch(() => ({}))) as { error?: string }
+  if (!response.ok || data.error) throw new Error(data.error ?? 'The sheet is unavailable.')
   return data
 }
 
-async function list(action: string): Promise<SiteResponse> {
-  return readJson(await fetch(`/api/site?action=${encodeURIComponent(action)}`))
+export async function fetchPosts(): Promise<SiteFeed<CommunityPost>> {
+  const data = await getCommunity()
+  return { rows: data.posts, unconfigured: data.source === 'unconfigured' }
 }
 
-function feed<T>(data: SiteResponse, key: 'comments' | 'announcements' | 'events'): SiteFeed<T> {
+export async function fetchReplies(parentPostId?: string): Promise<SiteFeed<CommunityReply>> {
+  const data = await getCommunity()
+  const rows = parentPostId
+    ? data.comments.filter((comment) => comment.parent_post_id === parentPostId)
+    : data.comments
+  return { rows, unconfigured: data.source === 'unconfigured' }
+}
+
+export async function fetchAudioSessions(): Promise<SiteFeed<AudioSession>> {
+  const data = await getAudios()
+  return { rows: data.audios, unconfigured: data.source === 'unconfigured' }
+}
+
+export async function createPost(input: CommunityPostInput): Promise<CommunityPost> {
+  return createCommunityPost(input)
+}
+
+export async function createReply(input: CommunityReplyInput): Promise<CommunityReply> {
+  return createCommunityComment(input)
+}
+
+export async function submitCheckin(input: SundayCheckinInput): Promise<void> {
+  await post({ action: 'checkin_create', ...input })
+}
+
+/* Legacy helpers kept so older sections keep working during rollout. */
+
+export async function fetchComments(): Promise<SiteFeed<CommunityComment>> {
+  const data = await getCommunity()
   return {
-    rows: (Array.isArray(data[key]) ? data[key] : []) as T[],
+    rows: data.comments.map((comment) => ({
+      id: comment.id ?? comment.comment_id,
+      name: comment.name,
+      message: comment.message ?? comment.comment_text,
+      created_at: comment.created_at ?? comment.timestamp,
+    })),
     unconfigured: data.source === 'unconfigured',
   }
 }
 
-export async function fetchComments(): Promise<SiteFeed<CommunityComment>> {
-  return feed<CommunityComment>(await list('list_comments'), 'comments')
+export async function postComment(input: { name: string; message: string }): Promise<CommunityComment> {
+  const saved = await createCommunityComment({
+    parent_post_id: '',
+    name: input.name,
+    comment_text: input.message,
+  })
+  return {
+    id: saved.id ?? saved.comment_id,
+    name: saved.name,
+    message: saved.comment_text ?? saved.message ?? '',
+    created_at: saved.timestamp,
+  }
 }
 
-export async function fetchAnnouncements(): Promise<SiteFeed<SheetAnnouncement>> {
-  return feed<SheetAnnouncement>(await list('list_announcements'), 'announcements')
+export async function fetchAnnouncements() {
+  const data = await getAnnouncementsEvents()
+  return { rows: data.announcements, unconfigured: data.source === 'unconfigured' }
 }
 
-export async function fetchEvents(): Promise<SiteFeed<SheetEvent>> {
-  return feed<SheetEvent>(await list('list_events'), 'events')
-}
-
-async function post(payload: Record<string, unknown>): Promise<SiteResponse> {
-  return readJson(
-    await fetch('/api/site', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    }),
-  )
-}
-
-export async function postComment(input: {
-  name: string
-  message: string
-}): Promise<CommunityComment> {
-  const data = await post({ action: 'comment_create', ...input })
-  if (!data.comment) throw new Error('The message was not saved.')
-  return data.comment
+export async function fetchEvents() {
+  const data = await getAnnouncementsEvents()
+  return { rows: data.events, unconfigured: data.source === 'unconfigured' }
 }
 
 export async function createAnnouncement(
-  input: {
-    title: string
-    body: string
-    date: string
-    is_pinned: boolean
-  },
+  input: { title: string; body: string; date: string; is_pinned: boolean },
   adminPin: string,
 ): Promise<void> {
   await post({ action: 'announcement_create', adminPin, ...input })

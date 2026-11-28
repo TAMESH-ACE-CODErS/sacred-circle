@@ -3,8 +3,9 @@ import { AnnouncementBar } from './AnnouncementBar'
 import { Navbar } from './Navbar'
 import { Footer } from './Footer'
 import { FloatingActions } from './FloatingActions'
+import { ConnectPrompt } from './ConnectPrompt'
 
-export function Layout() {
+export function Layout({ connectEnabled = false }: { connectEnabled?: boolean }) {
   return (
     <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
@@ -14,6 +15,7 @@ export function Layout() {
       </main>
       <Footer />
       <FloatingActions />
+      <ConnectPrompt enabled={connectEnabled} />
     </div>
   )
 }

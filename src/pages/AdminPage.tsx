@@ -2,9 +2,9 @@ import { useState, type FormEvent } from 'react'
 import { ArrowLeft, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext'
-import { SheetAnnouncements, SheetEvents } from '../components/admin/SheetAdmin'
+import { AdminAudio, SheetAnnouncements, SheetEvents } from '../components/admin/SheetAdmin'
 
-type Tab = 'announcements' | 'events'
+type Tab = 'announcements' | 'events' | 'audio'
 
 export function AdminPage() {
   const { t } = useLanguage()
@@ -102,6 +102,20 @@ export function AdminPage() {
                 >
                   {t('admin.tab.events')}
                 </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === 'audio'}
+                  onClick={() => setTab('audio')}
+                  className="min-h-[52px] rounded-full border px-5 text-base font-medium transition-colors"
+                  style={{
+                    borderColor: 'var(--border)',
+                    background: tab === 'audio' ? 'var(--text)' : 'transparent',
+                    color: tab === 'audio' ? 'var(--bg)' : 'var(--muted)',
+                  }}
+                >
+                  {t('admin.tab.audio')}
+                </button>
               </div>
               <button type="button" className="btn-secondary" onClick={() => { setUnlockedPin(''); setPin('') }}>
                 {t('common.signOut')}
@@ -111,6 +125,7 @@ export function AdminPage() {
             <div className="mt-8 space-y-8">
               {tab === 'announcements' && <SheetAnnouncements adminPin={unlockedPin} />}
               {tab === 'events' && <SheetEvents adminPin={unlockedPin} />}
+              {tab === 'audio' && <AdminAudio adminPin={unlockedPin} adminKey={unlockedPin} />}
               <Link to="/" className="btn-link !justify-start">
                 <ArrowLeft size={18} /> {t('admin.backToCircle')}
               </Link>

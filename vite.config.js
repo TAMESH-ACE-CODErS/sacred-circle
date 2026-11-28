@@ -88,8 +88,16 @@ function siteDevApi(scriptUrl, adminPin) {
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const quotesScriptUrl = env.VITE_QUOTES_SCRIPT_URL || env.QUOTES_SCRIPT_URL || '';
-    const siteScriptUrl = env.VITE_SACRED_SHEET_URL || env.SACRED_SHEET_URL || '';
-    const siteAdminPin = env.VITE_ADMIN_PIN || env.ADMIN_PIN || '';
+    const siteScriptUrl = env.VITE_SHEET_API_URL ||
+        env.VITE_SACRED_SHEET_URL ||
+        env.SHEET_API_URL ||
+        env.SACRED_SHEET_URL ||
+        '';
+    const siteAdminPin = env.VITE_ADMIN_PIN ||
+        env.ADMIN_PIN ||
+        env.VITE_ADMIN_KEY ||
+        env.ADMIN_KEY ||
+        '';
     return {
         plugins: [react(), youtubeDevApi, quotesDevApi(quotesScriptUrl), siteDevApi(siteScriptUrl, siteAdminPin)],
         server: { port: 5173 },

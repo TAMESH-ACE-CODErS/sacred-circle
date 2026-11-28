@@ -7,6 +7,9 @@ export const YOUTUBE_URL = 'https://www.youtube.com/@sacredcircle8336'
 
 export const EMAIL = 'sacredcircle45@gmail.com'
 
+export const CONNECT_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSf_hay4tKFrg479M532fTUb5F7cmAsNCOnNDxDBkbIV9jOEGw/viewform'
+
 export const SUNDAY_SESSION_TIME = 'Every Sunday, 4:00 PM IST'
 
 export const contactLinks: ContactLinks = {

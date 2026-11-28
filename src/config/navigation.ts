@@ -10,10 +10,12 @@ export const siteSections = [
   { id: 'announcements', labelKey: 'nav.announcements' },
   { id: 'about', labelKey: 'nav.about' },
   { id: 'sunday', labelKey: 'nav.sunday' },
+  { id: 'sunday-checkin', labelKey: 'nav.checkin' },
   { id: 'events', labelKey: 'nav.events' },
   { id: 'videos', labelKey: 'nav.youtube' },
-  { id: 'comments', labelKey: 'nav.comments' },
-  { id: 'materials', labelKey: 'nav.materials' },
+  { id: 'comments', labelKey: 'nav.community' },
+  { id: 'materials', labelKey: 'nav.library' },
+  { id: 'audio', labelKey: 'nav.audio' },
   { id: 'reviews', labelKey: 'nav.reviews' },
   { id: 'contact', labelKey: 'nav.contact' },
 ] as const satisfies readonly { id: string; labelKey: TranslationKey }[]
@@ -22,22 +24,33 @@ export type SectionId = (typeof siteSections)[number]['id']
 
 export const routeSectionMap: Record<string, SectionId> = {
   '/': 'home',
+  '/#home': 'home',
+  '/#announcements': 'announcements',
   '/about': 'about',
   '/sunday-meditation': 'sunday',
-  '/materials': 'materials',
-  '/reviews': 'reviews',
+  '/#sunday-checkin': 'sunday-checkin',
+  '/#events': 'events',
+  '/#videos': 'videos',
   '/community': 'comments',
+  '/#comments': 'comments',
+  '/materials': 'materials',
+  '/#materials': 'materials',
+  '/audio': 'audio',
+  '/#audio': 'audio',
+  '/reviews': 'reviews',
+  '/#reviews': 'reviews',
+  '/#contact': 'contact',
 }
 
-// Supabase `site_settings.nav_headers` can still override the footer links.
+/** The nine required tabs. Extra Sunday/check-in links stay in the drawer. */
 export const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'Announcements', href: '/#announcements' },
   { label: 'About', href: '/about' },
-  { label: 'Sunday Meditation', href: '/sunday-meditation' },
+  { label: 'Announcements', href: '/#announcements' },
   { label: 'Events', href: '/#events' },
-  { label: 'Comments / Community', href: '/community' },
-  { label: 'Materials', href: '/materials' },
+  { label: 'Library', href: '/materials' },
+  { label: 'Audio', href: '/audio' },
+  { label: 'Community', href: '/community' },
   { label: 'Reviews', href: '/reviews' },
   { label: 'Admin', href: '/admin' },
 ]

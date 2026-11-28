@@ -1,5 +1,6 @@
 import { MediaIcon } from './MediaIcon'
 import { SmartVideo } from './SmartVideo'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 
 type Props = {
   url: string
@@ -49,7 +50,13 @@ export function MediaPlayer({ url, mediaType, title, poster }: Props) {
           <MediaIcon mediaType="audio" />
           <span>Audio · keep the volume gentle</span>
         </div>
-        <audio controls preload="none" className="w-full" src={url}>
+        <audio
+          controls
+          preload="none"
+          className="w-full"
+          src={url}
+          onPlay={() => trackVisitorEvent('audio_play', { eventDetail: title })}
+        >
           Your browser does not support audio playback.
         </audio>
       </div>

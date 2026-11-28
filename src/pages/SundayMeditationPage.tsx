@@ -7,6 +7,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { useSiteContent } from '../hooks/useSiteContent'
 import { WHATSAPP_URL, YOUTUBE_URL } from '../config/site'
 import { mediaManifest } from '../config/mediaManifest'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 import type { TranslationKey } from '../i18n/translations'
 
 const steps: { number: string; title: TranslationKey; text: TranslationKey }[] = [
@@ -36,10 +37,22 @@ export function SundayMeditationPage() {
         image={mediaManifest.remote.sunday}
         imageAlt="A quiet meditation space in soft daylight"
       >
-        <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-primary">
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-primary"
+          onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Sunday page hero' })}
+        >
           <MessageCircle size={18} /> {t('sundayPage.getLink')}
         </a>
-        <a href={YOUTUBE_URL} target="_blank" rel="noreferrer" className="btn-secondary">
+        <a
+          href={YOUTUBE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-secondary"
+          onClick={() => trackVisitorEvent('youtube_click', { eventDetail: 'Sunday page hero' })}
+        >
           {t('sundayPage.watch')}
         </a>
       </PageHero>
@@ -90,7 +103,13 @@ export function SundayMeditationPage() {
             {t('sundayPage.closingDescription')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-primary">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-primary"
+              onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Sunday page closing' })}
+            >
               {t('cta.joinWhatsApp')}
             </a>
             <Link to="/materials" className="btn-secondary">

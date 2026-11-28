@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Mail, MessageCircle, Youtube } from 'lucide-react'
 import { PageHero } from '../components/PageHero'
 import { SectionHeading } from '../components/SectionHeading'
+import { CommunitySection } from '../components/CommunitySection'
 import { useSiteContent } from '../hooks/useSiteContent'
 import { useLanguage } from '../context/LanguageContext'
 import { mediaManifest } from '../config/mediaManifest'
+import { CONNECT_FORM_URL } from '../config/site'
 import type { TranslationKey } from '../i18n/translations'
 
 type Channel = {
@@ -79,6 +81,11 @@ export function CommunityPage() {
             </article>
           ))}
         </div>
+        <div className="mt-8 text-center">
+          <a href={CONNECT_FORM_URL} target="_blank" rel="noreferrer" className="btn-primary">
+            {t('connect.stayConnected')}
+          </a>
+        </div>
       </section>
 
       <section className="section-shell !pt-12">
@@ -105,6 +112,8 @@ export function CommunityPage() {
           </div>
         </div>
       </section>
+
+      <CommunitySection />
     </>
   )
 }

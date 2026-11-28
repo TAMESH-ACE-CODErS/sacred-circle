@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react'
 import { SectionHeading } from './SectionHeading'
 import { getFounderImage } from '../config/mediaManifest'
 import { useLanguage } from '../context/LanguageContext'
+import type { TranslationKey } from '../i18n/translations'
+
+const milestones: { question: TranslationKey; answer: TranslationKey }[] = [
+  { question: 'about.q1', answer: 'about.a1' },
+  { question: 'about.q2', answer: 'about.a2' },
+  { question: 'about.q3', answer: 'about.a3' },
+  { question: 'about.q4', answer: 'about.a4' },
+]
 
 export function AboutSection() {
   const { t } = useLanguage()
 
   return (
     <section id="about" className="section-shell">
-      <div className="grid items-center gap-12 lg:grid-cols-2">
+      <div className="grid items-center gap-6 lg:grid-cols-2">
         <div className="order-2 lg:order-1">
           <SectionHeading
             eyebrow={t('about.eyebrow')}
@@ -48,6 +57,31 @@ export function AboutSection() {
             </p>
           </figcaption>
         </figure>
+      </div>
+
+      <div className="mt-12">
+        <p className="eyebrow">{t('about.milestoneEyebrow')}</p>
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          {milestones.map((item, index) => (
+            <details key={item.question} className="card group !p-0" open={index === 0}>
+              <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 text-lg font-semibold sm:text-xl">
+                <span>{t(item.question)}</span>
+                <ChevronDown
+                  size={24}
+                  className="shrink-0 transition-transform group-open:rotate-180"
+                  style={{ color: 'var(--accent-strong)' }}
+                  aria-hidden="true"
+                />
+              </summary>
+              <div
+                className="border-t px-6 py-5 text-base leading-relaxed sm:text-lg"
+                style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}
+              >
+                {t(item.answer)}
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   )

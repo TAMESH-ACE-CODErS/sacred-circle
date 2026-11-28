@@ -5,6 +5,7 @@ import { copy, WHATSAPP_URL } from '../config/site'
 import { getFounderImage, mediaManifest } from '../config/mediaManifest'
 import { useLanguage } from '../context/LanguageContext'
 import { useSiteContent } from '../hooks/useSiteContent'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 
 export function HeroReel() {
   const { sundayTime } = useSiteContent()
@@ -59,7 +60,13 @@ export function HeroReel() {
               {t('hero.join')}
               <ArrowRight size={19} />
             </Link>
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-secondary">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-secondary"
+              onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Hero section' })}
+            >
               <MessageCircle size={19} />
               {t('hero.whatsapp')}
             </a>

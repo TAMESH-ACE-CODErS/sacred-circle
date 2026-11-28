@@ -98,6 +98,14 @@ button, a, input, textarea, select {
   color: var(--text);
 }
 
+summary {
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
 @layer components {
   .surface {
     background: var(--surface);
@@ -163,6 +171,14 @@ button, a, input, textarea, select {
 .hero-grain {
   background-image: radial-gradient(circle at 20% 20%, rgba(220, 180, 88, 0.12), transparent 55%),
     radial-gradient(circle at 85% 30%, rgba(150, 115, 74, 0.1), transparent 50%);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

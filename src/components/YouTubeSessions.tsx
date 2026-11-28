@@ -5,7 +5,10 @@ import type { YouTubeFeed, YouTubeVideo } from '../types/youtube'
 import { YOUTUBE_URL } from '../config/site'
 import { useLanguage } from '../context/LanguageContext'
 import { setVideoStructuredData } from '../lib/structuredData'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 import { SectionHeading } from './SectionHeading'
+import { SwipeDeck } from './SwipeDeck'
+import { VideoThumbnail } from './VideoThumbnail'
 
 export function YouTubeSessions() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
@@ -56,7 +59,13 @@ export function YouTubeSessions() {
           title={t('videos.title')}
           description={t('videos.description')}
         />
-        <a href={YOUTUBE_URL} target="_blank" rel="noreferrer" className="btn-secondary shrink-0">
+        <a
+          href={YOUTUBE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-secondary shrink-0"
+          onClick={() => trackVisitorEvent('youtube_click', { eventDetail: 'Visit channel' })}
+        >
           {t('videos.visitChannel')} <ExternalLink size={18} />
         </a>
       </div>
@@ -70,57 +79,70 @@ export function YouTubeSessions() {
       {status === 'unavailable' && (
         <div className="soft-panel mt-10 text-center">
           <p className="text-lg">{t('videos.unavailable')}</p>
-          <a href={YOUTUBE_URL} target="_blank" rel="noreferrer" className="btn-primary mt-6">
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary mt-6"
+            onClick={() => trackVisitorEvent('youtube_click', { eventDetail: 'Open channel fallback' })}
+          >
             {t('videos.openChannel')}
           </a>
         </div>
       )}
 
       {status === 'ready' && (
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {videos.slice(0, 6).map((video) => (
-            <article key={video.videoId} className="card overflow-hidden !p-0">
-              <button
-                type="button"
-                onClick={() => setActive(video)}
-                className="group block w-full text-left"
-                aria-label={`${t('videos.play')} ${video.title}`}
-              >
-                <span className="relative block aspect-video overflow-hidden">
-                  <img
-                    src={video.thumbnail}
-                    alt={`${t('videos.thumbnailAlt')} ${video.title}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <span
-                    className="absolute inset-0 grid place-items-center"
-                    style={{ background: 'rgba(20, 17, 15, 0.24)' }}
-                    aria-hidden="true"
-                  >
+        <div className="mt-8">
+          <SwipeDeck
+            items={videos.slice(0, 6)}
+            getKey={(video) => video.videoId}
+            label={t('videos.title')}
+            renderItem={(video) => (
+              <article className="card overflow-hidden !p-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackVisitorEvent('video_play', { eventDetail: video.title })
+                    setActive(video)
+                  }}
+                  className="group block w-full text-left"
+                  aria-label={`${t('videos.play')} ${video.title}`}
+                >
+                  <span className="relative block aspect-video overflow-hidden">
+                    <VideoThumbnail
+                      src={video.thumbnail}
+                      alt={`${t('videos.thumbnailAlt')} ${video.title}`}
+                      className="h-full w-full"
+                    />
                     <span
-                      className="grid h-16 w-16 place-items-center rounded-full"
-                      style={{ background: 'rgba(255, 253, 248, 0.94)', color: '#77593C' }}
+                      className="absolute inset-0 grid place-items-center"
+                      style={{ background: 'rgba(20, 17, 15, 0.24)' }}
+                      aria-hidden="true"
                     >
-                      <Play size={28} fill="currentColor" />
+                      <span
+                        className="grid h-16 w-16 place-items-center rounded-full"
+                        style={{ background: 'rgba(255, 253, 248, 0.94)', color: '#77593C' }}
+                      >
+                        <Play size={28} fill="currentColor" />
+                      </span>
                     </span>
                   </span>
-                </span>
-                <span className="block p-6">
-                  <span className="line-clamp-2 block text-lg font-semibold leading-snug">
-                    {video.title}
+                  <span className="block p-6">
+                    <span className="line-clamp-2 block text-lg font-semibold leading-snug">
+                      {video.title}
+                    </span>
+                    <span className="mt-3 block text-base" style={{ color: 'var(--muted)' }}>
+                      {new Date(video.publishedAt).toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </span>
                   </span>
-                  <span className="mt-3 block text-base" style={{ color: 'var(--muted)' }}>
-                    {new Date(video.publishedAt).toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </span>
-              </button>
-            </article>
-          ))}
+                </button>
+              </article>
+            )}
+          />
         </div>
       )}
 
@@ -153,11 +175,12 @@ export function YouTubeSessions() {
                 <button
                   type="button"
                   onClick={() => setActive(null)}
-                  className="inline-flex min-h-[48px] min-w-[48px] shrink-0 items-center justify-center rounded-full"
+                  className="inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-full px-4 text-base font-semibold"
                   style={{ color: 'var(--muted)' }}
                   aria-label={t('videos.close')}
                 >
-                  <X size={24} />
+                  <X size={20} aria-hidden="true" />
+                  <span>{t('videos.close')}</span>
                 </button>
               </div>
               <div className="aspect-video w-full overflow-hidden rounded-2xl bg-black">
@@ -174,6 +197,7 @@ export function YouTubeSessions() {
                 target="_blank"
                 rel="noreferrer"
                 className="btn-link mt-4 !min-h-[48px] px-2"
+                onClick={() => trackVisitorEvent('youtube_click', { eventDetail: active.title })}
               >
                 {t('videos.watch')} <ExternalLink size={18} />
               </a>

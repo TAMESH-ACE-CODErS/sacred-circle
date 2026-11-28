@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Languages, Menu, MessageCircle, X } from 'lucide-react'
+import { Languages, Menu, MessageCircle, Moon, Sun, X } from 'lucide-react'
 import { siteSections } from '../config/navigation'
 import { WHATSAPP_URL } from '../config/site'
 import { useLanguage } from '../context/LanguageContext'
+import { useFontSize } from '../context/FontSizeContext'
+import { useTheme } from '../context/ThemeContext'
 import { useScrollSpy } from '../hooks/useScrollSpy'
 import { ChakraToggle } from './ChakraToggle'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 
 export function Navbar() {
   const { t, language, toggleLanguage } = useLanguage()
+  const { decrease, increase, canDecrease, canIncrease } = useFontSize()
+  const { theme, toggleTheme } = useTheme()
   const activeSection = useScrollSpy()
   const { pathname, hash } = useLocation()
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -26,12 +31,10 @@ export function Navbar() {
     if (!drawerOpen) return
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setDrawerOpen(false)
     }
     window.addEventListener('keydown', onKeyDown)
-
     return () => {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', onKeyDown)
@@ -44,33 +47,19 @@ export function Navbar() {
       style={{ background: 'color-mix(in srgb, var(--bg) 94%, transparent)', borderColor: 'var(--border)' }}
     >
       <nav
-        className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-5 py-2 sm:px-8"
+        className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-8"
         aria-label="Main navigation"
       >
         <Link
           to="/"
-          className="flex min-h-[52px] shrink-0 items-center gap-2"
+          className="flex min-h-[52px] shrink-0 items-center gap-2 text-lg font-bold tracking-tight sm:text-2xl"
           aria-label={`${t('common.brand')} — ${t('nav.home')}`}
         >
-          <img src="/favicon.svg" alt="" className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
-          <span className="hidden font-display text-lg tracking-tight sm:inline sm:text-2xl">
-            {t('common.brand')}
-          </span>
+          <img src="/favicon.svg" alt="" className="hidden h-10 w-10 shrink-0 sm:block" />
+          <span>{t('common.brand')}</span>
         </Link>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={toggleLanguage}
-            className="inline-flex min-h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full px-3 text-base font-semibold shadow-calm sm:px-5"
-            style={{ background: 'var(--text)', color: 'var(--bg)' }}
-            aria-label={`${t('common.translate')} — ${language === 'en' ? 'English' : 'हिन्दी'}. ${language === 'en' ? 'हिन्दी' : 'English'}`}
-            title={t('common.translate')}
-          >
-            <Languages size={20} aria-hidden="true" />
-            <span className="hidden sm:inline">English / हिन्दी</span>
-            <span className="sm:hidden">{language === 'en' ? 'HI' : 'EN'}</span>
-          </button>
+        <div className="flex shrink-0 items-center gap-2">
           <ChakraToggle />
           <button
             type="button"
@@ -88,6 +77,7 @@ export function Navbar() {
             target="_blank"
             rel="noreferrer"
             className="btn-primary hidden !px-5 !text-base xl:inline-flex"
+            onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Top navigation' })}
           >
             {t('common.joinFreeSession')}
           </a>
@@ -133,15 +123,6 @@ export function Navbar() {
         </div>
       </div>
 
-      <div
-        className="flex min-h-[32px] items-center gap-2 px-5 py-1 text-base font-semibold lg:hidden"
-        style={{ borderTop: '1px solid var(--border)', color: 'var(--accent-strong)' }}
-        aria-live="polite"
-      >
-        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: 'var(--accent-strong)' }} aria-hidden="true" />
-        <span className="truncate">{t('common.currentSection')}: {activeLabel}</span>
-      </div>
-
       <AnimatePresence>
         {drawerOpen && (
           <motion.div
@@ -164,7 +145,7 @@ export function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label={t('nav.menu')}
-              className="absolute inset-y-0 right-0 flex w-[min(88vw,380px)] flex-col overflow-y-auto px-5 py-6"
+              className="absolute inset-y-0 right-0 flex w-[min(88vw,380px)] flex-col overflow-y-auto px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
               style={{ background: 'var(--surface)', borderLeft: '1px solid var(--border)' }}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -179,11 +160,12 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={() => setDrawerOpen(false)}
-                  className="inline-flex min-h-[52px] min-w-[52px] shrink-0 items-center justify-center rounded-full border"
-                  style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+                  className="inline-flex min-h-[56px] shrink-0 items-center gap-2 rounded-full border px-4 text-base font-semibold"
+                  style={{ borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text)' }}
                   aria-label={t('nav.closeMenu')}
                 >
-                  <X size={24} aria-hidden="true" />
+                  <X size={22} aria-hidden="true" />
+                  <span>{t('common.close')}</span>
                 </button>
               </div>
 
@@ -191,7 +173,7 @@ export function Navbar() {
                 {t('common.currentSection')}: {activeLabel}
               </p>
 
-              <nav className="mt-8 flex flex-col gap-2" aria-label={t('nav.menu')}>
+              <nav className="mt-6 flex flex-col gap-2" aria-label={t('nav.menu')}>
                 {siteSections.map((section) => {
                   const isActive = pathname === '/' && activeSection === section.id
                   return (
@@ -224,12 +206,59 @@ export function Navbar() {
                 </Link>
               </nav>
 
+              <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--border)' }}>
+                <p className="eyebrow !mb-3">{t('font.label')}</p>
+                <button
+                  type="button"
+                  onClick={toggleLanguage}
+                  className="flex min-h-[56px] w-full items-center gap-3 rounded-2xl border px-4 text-left text-lg font-semibold"
+                  style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
+                >
+                  <Languages size={20} aria-hidden="true" />
+                  <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
+                </button>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={decrease}
+                    disabled={!canDecrease}
+                    className="inline-flex min-h-[56px] flex-1 items-center justify-center rounded-2xl border px-4 text-lg font-bold disabled:opacity-45"
+                    style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
+                    aria-label={t('font.decrease')}
+                  >
+                    A−
+                  </button>
+                  <button
+                    type="button"
+                    onClick={increase}
+                    disabled={!canIncrease}
+                    className="inline-flex min-h-[56px] flex-1 items-center justify-center rounded-2xl border px-4 text-lg font-bold disabled:opacity-45"
+                    style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
+                    aria-label={t('font.increase')}
+                  >
+                    A+
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="mt-2 flex min-h-[56px] w-full items-center gap-3 rounded-2xl border px-4 text-left text-lg font-semibold"
+                  style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
+                >
+                  {theme === 'dark' ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
+                  <span>{theme === 'dark' ? t('theme.light') : t('theme.dark')}</span>
+                </button>
+              </div>
+
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-primary mt-8 w-full"
-                onClick={() => setDrawerOpen(false)}
+                className="btn-primary mt-6 w-full !min-h-[56px]"
+                onClick={() => {
+                  trackVisitorEvent('whatsapp_click', { eventDetail: 'Mobile menu' })
+                  setDrawerOpen(false)
+                }}
               >
                 <MessageCircle size={19} aria-hidden="true" />
                 {t('common.joinFreeSession')}

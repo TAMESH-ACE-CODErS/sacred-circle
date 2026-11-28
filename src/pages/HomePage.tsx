@@ -4,6 +4,7 @@ import { HeroReel } from '../components/HeroReel'
 import { SundaySection } from '../components/SundaySection'
 import { AboutSection } from '../components/AboutSection'
 import { MaterialsGallery } from '../components/MaterialsGallery'
+import { AudioLibrary } from '../components/AudioLibrary'
 import { ReviewsSection } from '../components/ReviewsSection'
 import { YouTubeSessions } from '../components/YouTubeSessions'
 import { AnnouncementsSection } from '../components/AnnouncementsSection'
@@ -12,6 +13,7 @@ import { CommunitySection } from '../components/CommunitySection'
 import { FaqSection } from '../components/FaqSection'
 import { SectionHeading } from '../components/SectionHeading'
 import { useLanguage } from '../context/LanguageContext'
+import { trackVisitorEvent } from '../lib/sheetTracker'
 import { WHATSAPP_URL } from '../config/site'
 import type { TranslationKey } from '../i18n/translations'
 
@@ -86,6 +88,8 @@ export function HomePage() {
         <MaterialsGallery limit={3} showFilters={false} />
       </section>
 
+      <AudioLibrary />
+
       <ReviewsSection limit={4} />
 
       <FaqSection />
@@ -101,7 +105,13 @@ export function HomePage() {
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/sunday-meditation" className="btn-primary">{t('cta.seeHow')}</Link>
-            <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="btn-secondary">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-secondary"
+              onClick={() => trackVisitorEvent('whatsapp_click', { eventDetail: 'Home closing CTA' })}
+            >
               {t('cta.joinWhatsApp')}
             </a>
           </div>

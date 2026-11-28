@@ -6,6 +6,7 @@ import App from './App'
 import { ThemeProvider } from './context/ThemeContext'
 import { ContentProvider } from './context/ContentContext'
 import { LanguageProvider } from './context/LanguageContext'
+import { FontSizeProvider } from './context/FontSizeContext'
 import './index.css'
 
 const root = document.getElementById('root')
@@ -17,9 +18,11 @@ createRoot(root).render(
       <MotionConfig reducedMotion="user">
         <ThemeProvider>
           <ContentProvider>
-            <LanguageProvider>
-              <App />
-            </LanguageProvider>
+            <FontSizeProvider>
+              <LanguageProvider>
+                <App />
+              </LanguageProvider>
+            </FontSizeProvider>
           </ContentProvider>
         </ThemeProvider>
       </MotionConfig>
