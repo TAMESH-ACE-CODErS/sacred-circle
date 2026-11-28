@@ -19,40 +19,55 @@ const aboutCards: { figure: TranslationKey; title: TranslationKey; text: Transla
   { figure: 'intro.card4Figure', title: 'intro.card4Title', text: 'intro.card4Text' },
 ]
 
-const LINE_MS = 1800 // English ↔ Hindi flicker/cross-fade (3.6s total)
-const ABOUT_MS = 5500 // animated story-card sequence
+const REEL_MS = 1800 * introLines.length // 3.6s bilingual reel
+const BROCHURE_MS = 5000 // compulsory five-second brochure
 
 type Props = { onEnter: () => void }
 
 export function EntryReel({ onEnter }: Props) {
-  const [stage, setStage] = useState<'intro' | 'about'>('intro')
+  const [stage, setStage] = useState<'reel' | 'brochure'>('reel')
   const [lineIndex, setLineIndex] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const [secondsLeft, setSecondsLeft] = useState(5)
+  const [canContinue, setCanContinue] = useState(false)
   const reducedMotion = useReducedMotion()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   useEffect(() => {
-    if (stage === 'intro') {
-      const cycle = window.setInterval(
-        () => setLineIndex((i) => (i + 1) % introLines.length),
-        LINE_MS,
-      )
-      const advance = window.setTimeout(() => setStage('about'), LINE_MS * introLines.length)
-      return () => {
-        window.clearInterval(cycle)
-        window.clearTimeout(advance)
-      }
+    if (stage !== 'reel') return
+    const cycle = window.setInterval(
+      () => setLineIndex((i) => (i + 1) % introLines.length),
+      1800,
+    )
+    const advance = window.setTimeout(() => setStage('brochure'), REEL_MS)
+    return () => {
+      window.clearInterval(cycle)
+      window.clearTimeout(advance)
     }
-    const finish = window.setTimeout(onEnter, ABOUT_MS)
-    return () => window.clearTimeout(finish)
+  }, [stage])
+
+  useEffect(() => {
+    if (stage !== 'brochure') return
+    const startedAt = performance.now()
+    const timer = window.setInterval(() => {
+      const elapsed = performance.now() - startedAt
+      setProgress(Math.min(100, (elapsed / BROCHURE_MS) * 100))
+      setSecondsLeft(Math.max(0, Math.ceil((BROCHURE_MS - elapsed) / 1000)))
+      if (elapsed >= BROCHURE_MS) {
+        window.clearInterval(timer)
+        setCanContinue(true)
+        onEnter()
+      }
+    }, 100)
+    return () => window.clearInterval(timer)
   }, [stage, onEnter])
 
-  useEffect(() => {
-    const onKeyDown = () => onEnter()
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onEnter])
+  function continueToSite() {
+    if (canContinue) onEnter()
+  }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (!canContinue) return
     if (event.key === 'Enter' || event.key === ' ' || event.key === 'Escape') {
       event.preventDefault()
       onEnter()
@@ -61,39 +76,43 @@ export function EntryReel({ onEnter }: Props) {
 
   const line = introLines[lineIndex]
   const duration = reducedMotion ? 0.01 : 0.75
+  const founderLine = language === 'hi' ? copy.foundersHi : copy.foundersEn
 
   return (
     <motion.div
       role="button"
       tabIndex={0}
-      aria-label={t('common.tapAnywhere')}
-      onClick={onEnter}
+      aria-label={canContinue ? t('common.tapAnywhere') : t('common.introPlaying')}
+      aria-disabled={!canContinue}
+      onClick={continueToSite}
       onKeyDown={handleKeyDown}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: reducedMotion ? 0.01 : 0.9 }}
-      className="fixed inset-0 z-[100] flex cursor-pointer flex-col overflow-y-auto px-5 py-20 text-center sm:px-10"
+      className="fixed inset-0 z-[100] flex cursor-default flex-col overflow-y-auto px-5 py-20 text-center sm:px-10"
       style={{ background: '#FAF6EE', color: '#211D19' }}
     >
       <button
         type="button"
+        disabled={!canContinue}
         onClick={(event) => {
           event.stopPropagation()
-          onEnter()
+          continueToSite()
         }}
-        className="absolute right-4 top-4 z-10 inline-flex min-h-[52px] items-center gap-2 rounded-full border-2 px-5 text-lg font-semibold shadow-calm sm:right-8 sm:top-6"
+        className="absolute right-4 top-4 z-10 inline-flex min-h-[52px] items-center gap-2 rounded-full border-2 px-5 text-lg font-semibold shadow-calm disabled:cursor-not-allowed disabled:opacity-60 sm:right-8 sm:top-6"
         style={{ background: '#FFFDF8', borderColor: '#77593C', color: '#77593C' }}
-        aria-label={`${t('common.skipIntro')} — ${t('common.tapAnywhere')}`}
+        aria-label={canContinue ? t('common.enterSite') : t('common.introPlaying')}
       >
-        {t('common.skipIntro')} <ArrowRight size={20} />
+        {canContinue ? t('common.enterSite') : `${t('common.pleaseWait')} ${secondsLeft}s`}
+        <ArrowRight size={20} aria-hidden="true" />
       </button>
 
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center">
         <AnimatePresence mode="wait" initial={false}>
-          {stage === 'intro' ? (
+          {stage === 'reel' ? (
             <motion.div
-              key="intro"
+              key="reel"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -14 }}
@@ -142,7 +161,7 @@ export function EntryReel({ onEnter }: Props) {
             </motion.div>
           ) : (
             <motion.div
-              key="about"
+              key="brochure"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -160,9 +179,12 @@ export function EntryReel({ onEnter }: Props) {
               >
                 <img
                   src={getFounderImage('clientMF')}
-                  alt="Diwakar Raipur and Lina Bhave, founders of Sacred Circle"
+                  alt={`${copy.foundersEn}, founders of Sacred Circle`}
                   className="block aspect-[5/3] w-full rounded-2xl object-cover object-top"
                 />
+                <p className={`mt-2 pb-1 text-base font-semibold ${language === 'hi' ? 'devanagari' : ''}`}>
+                  {founderLine}
+                </p>
               </div>
 
               <div className="mx-auto mt-7 grid max-w-4xl gap-4 sm:grid-cols-2">
@@ -188,13 +210,37 @@ export function EntryReel({ onEnter }: Props) {
                   </motion.article>
                 ))}
               </div>
+
+              <div className="mx-auto mt-7 max-w-xl">
+                <div
+                  className="h-1.5 w-full overflow-hidden rounded-full"
+                  style={{ background: '#E4D8C5' }}
+                  role="progressbar"
+                  aria-label={t('intro.brochureProgress')}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(progress)}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${progress}%`,
+                      background: '#B71C1C',
+                      transition: reducedMotion ? 'none' : 'width 100ms linear',
+                    }}
+                  />
+                </div>
+                <p className="mt-3 text-base font-semibold" style={{ color: '#77593C' }} aria-live="polite">
+                  {t('intro.continueIn').replace('{seconds}', String(secondsLeft))}
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       <p className="mx-auto mt-6 shrink-0 text-lg font-semibold" style={{ color: '#211D19' }}>
-        {t('common.tapAnywhere')}
+        {stage === 'reel' ? t('common.introPlaying') : t('intro.brochureNote')}
       </p>
     </motion.div>
   )

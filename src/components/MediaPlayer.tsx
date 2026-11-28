@@ -1,9 +1,11 @@
 import { MediaIcon } from './MediaIcon'
+import { SmartVideo } from './SmartVideo'
 
 type Props = {
   url: string
   mediaType: string
   title: string
+  poster?: string
 }
 
 function youtubeEmbedUrl(url: string): string | null {
@@ -24,7 +26,7 @@ function youtubeEmbedUrl(url: string): string | null {
   return null
 }
 
-export function MediaPlayer({ url, mediaType, title }: Props) {
+export function MediaPlayer({ url, mediaType, title, poster }: Props) {
   const embed = youtubeEmbedUrl(url)
 
   if (embed) {
@@ -55,14 +57,11 @@ export function MediaPlayer({ url, mediaType, title }: Props) {
   }
 
   return (
-    <video
-      controls
-      preload="none"
-      playsInline
-      className="aspect-video w-full rounded-2xl bg-black"
+    <SmartVideo
       src={url}
-    >
-      Your browser does not support video playback.
-    </video>
+      poster={poster}
+      title={title}
+      className="aspect-video w-full rounded-2xl bg-black"
+    />
   )
 }

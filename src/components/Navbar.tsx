@@ -10,7 +10,8 @@ export function Navbar() {
   const { t, language, toggleLanguage } = useLanguage()
   const activeSection = useScrollSpy()
   const { pathname } = useLocation()
-  const activeLabel = t(siteSections.find((section) => section.id === activeSection)?.labelKey ?? 'nav.home')
+  const activeKey = pathname === '/admin' ? 'nav.admin' : siteSections.find((section) => section.id === activeSection)?.labelKey ?? 'nav.home'
+  const activeLabel = t(activeKey)
 
   return (
     <header
@@ -55,7 +56,7 @@ export function Navbar() {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="flex gap-1 overflow-x-auto py-1" role="navigation" aria-label={t('common.currentSection')}>
             {siteSections.map((section) => {
-              const isActive = activeSection === section.id
+              const isActive = pathname === '/' && activeSection === section.id
               return (
                 <Link
                   key={section.id}
@@ -73,6 +74,19 @@ export function Navbar() {
                 </Link>
               )
             })}
+            <Link
+              to="/admin"
+              aria-current={pathname === '/admin' ? 'page' : undefined}
+              className={`inline-flex min-h-[48px] shrink-0 items-center rounded-full px-4 text-base transition-colors ${
+                pathname === '/admin' ? 'font-bold underline decoration-2 underline-offset-4' : 'font-medium hover:opacity-75'
+              }`}
+              style={{
+                color: pathname === '/admin' ? 'var(--accent-strong)' : 'var(--text)',
+                background: pathname === '/admin' ? 'var(--accent-soft)' : 'transparent',
+              }}
+            >
+              {t('nav.admin')}
+            </Link>
           </div>
           <p
             className="flex min-h-[28px] items-center gap-2 pb-1 text-sm font-semibold"

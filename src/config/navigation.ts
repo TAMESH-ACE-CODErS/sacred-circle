@@ -7,10 +7,12 @@ import type { TranslationKey } from '../i18n/translations'
  */
 export const siteSections = [
   { id: 'home', labelKey: 'nav.home' },
+  { id: 'announcements', labelKey: 'nav.announcements' },
   { id: 'about', labelKey: 'nav.about' },
   { id: 'sunday', labelKey: 'nav.sunday' },
+  { id: 'events', labelKey: 'nav.events' },
   { id: 'videos', labelKey: 'nav.youtube' },
-  { id: 'quotes', labelKey: 'nav.quotes' },
+  { id: 'comments', labelKey: 'nav.comments' },
   { id: 'materials', labelKey: 'nav.materials' },
   { id: 'reviews', labelKey: 'nav.reviews' },
   { id: 'contact', labelKey: 'nav.contact' },
@@ -24,17 +26,20 @@ export const routeSectionMap: Record<string, SectionId> = {
   '/sunday-meditation': 'sunday',
   '/materials': 'materials',
   '/reviews': 'reviews',
-  '/community': 'contact',
+  '/community': 'comments',
 }
 
 // Supabase `site_settings.nav_headers` can still override the footer links.
 export const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
+  { label: 'Announcements', href: '/#announcements' },
   { label: 'About', href: '/about' },
   { label: 'Sunday Meditation', href: '/sunday-meditation' },
+  { label: 'Events', href: '/#events' },
+  { label: 'Comments / Community', href: '/community' },
   { label: 'Materials', href: '/materials' },
   { label: 'Reviews', href: '/reviews' },
-  { label: 'Community', href: '/community' },
+  { label: 'Admin', href: '/admin' },
 ]
 
 export function normalizeNavItems(value: unknown): NavItem[] {

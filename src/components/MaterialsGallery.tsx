@@ -130,6 +130,7 @@ export function MaterialsGallery({ limit, showFilters = true }: Props) {
                         url={(open?.media_url ?? item.media_url) as string}
                         mediaType={open?.media_type ?? item.media_type}
                         title={open?.title ?? item.title}
+                        poster={item.thumbnail_url ?? undefined}
                       />
                       {isYouTube && !open && (
                         <p className="mt-2 text-xs" style={{ color: 'var(--muted)' }}>

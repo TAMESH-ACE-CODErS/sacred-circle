@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { getLatestVideos } from './api/youtube';
 import { callQuotesScript } from './api/quotes';
+import { callSiteScript } from './api/site';
 // Mirrors the Vercel /api/youtube function during `npm run dev`.
 const youtubeDevApi = {
     name: 'youtube-api-dev',
@@ -62,11 +63,34 @@ function quotesDevApi(scriptUrl) {
         },
     };
 }
+// Mirrors the Vercel /api/site function during `npm run dev`.
+function siteDevApi(scriptUrl) {
+    return {
+        name: 'site-api-dev',
+        configureServer(server) {
+            server.middlewares.use('/api/site', async (request, response) => {
+                const devRequest = request;
+                const method = devRequest.method ?? 'GET';
+                const query = {};
+                new URL(devRequest.url ?? '/', 'http://localhost').searchParams.forEach((value, key) => {
+                    query[key] = value;
+                });
+                const payload = method === 'POST' ? await readJsonBody(devRequest) : undefined;
+                const result = await callSiteScript(query, payload, scriptUrl);
+                response.setHeader('Content-Type', 'application/json; charset=utf-8');
+                response.setHeader('Cache-Control', method === 'GET' ? 'public, s-maxage=60' : 'no-store');
+                response.statusCode = result.status;
+                response.end(JSON.stringify(result.body));
+            });
+        },
+    };
+}
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     const quotesScriptUrl = env.VITE_QUOTES_SCRIPT_URL || env.QUOTES_SCRIPT_URL || '';
+    const siteScriptUrl = env.VITE_SACRED_SHEET_URL || env.SACRED_SHEET_URL || '';
     return {
-        plugins: [react(), youtubeDevApi, quotesDevApi(quotesScriptUrl)],
+        plugins: [react(), youtubeDevApi, quotesDevApi(quotesScriptUrl), siteDevApi(siteScriptUrl)],
         server: { port: 5173 },
         build: {
             rollupOptions: {

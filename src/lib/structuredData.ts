@@ -13,7 +13,7 @@ export function setVideoStructuredData(videos: YouTubeVideo[]): void {
     '@graph': videos.slice(0, 6).map((video) => ({
       '@type': 'VideoObject',
       name: video.title,
-      description: `A free Sacred Circle healing and meditation session with Diwakar Raipur and Lina Bhave. ${video.title}`,
+      description: `A free Sacred Circle healing and meditation session with Lina Bhave and Diwakar Raipure. ${video.title}`,
       thumbnailUrl: video.thumbnail,
       uploadDate: video.publishedAt,
       contentUrl: video.url,

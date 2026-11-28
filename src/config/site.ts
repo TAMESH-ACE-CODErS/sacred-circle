@@ -17,8 +17,8 @@ export const contactLinks: ContactLinks = {
 
 // Warm copy, grounded and never salesy. Hindi lines are used by the bilingual reel.
 export const copy = {
-  foundersEn: 'Diwakar Raipur & Lina Bhave',
-  foundersHi: 'दिवाकर रायपुर एवं लीना भावे',
+  foundersEn: 'Lina Bhave & Diwakar Raipure',
+  foundersHi: 'लीना भावे एवं दिवाकर रायपुरे',
   teachingEn: 'We teach Healing & Meditation',
   teachingHi: 'हम हीलिंग और ध्यान सिखाते हैं',
   freeSession: 'Free Weekly Sunday Meditation',

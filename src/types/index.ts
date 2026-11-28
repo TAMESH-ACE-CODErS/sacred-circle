@@ -51,3 +51,27 @@ export type ContactLinks = {
   whatsapp: string
   email: string
 }
+
+export type CommunityComment = {
+  id?: string
+  name: string
+  message: string
+  created_at: string
+}
+
+export type SheetAnnouncement = {
+  id: string
+  title: string
+  body: string
+  date: string
+  is_pinned: boolean
+}
+
+export type SheetEvent = {
+  id: string
+  title: string
+  date: string
+  time: string
+  location_or_link: string
+  description: string
+}

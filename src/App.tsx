@@ -67,20 +67,28 @@ export default function App() {
       <AnimatePresence>
         {showIntro && <EntryReel key="intro" onEnter={finishIntro} />}
       </AnimatePresence>
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/sunday-meditation" element={<SundayMeditationPage />} />
-            <Route path="/materials" element={<MaterialsPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <div
+        aria-hidden={showIntro}
+        style={{
+          visibility: showIntro ? 'hidden' : 'visible',
+          pointerEvents: showIntro ? 'none' : 'auto',
+        }}
+      >
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/sunday-meditation" element={<SundayMeditationPage />} />
+              <Route path="/materials" element={<MaterialsPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </div>
     </>
   )
 }

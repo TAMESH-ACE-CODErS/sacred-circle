@@ -24,7 +24,7 @@ export function AboutPage() {
         title={t('aboutPage.heroTitle')}
         description={t('aboutPage.heroDescription')}
         image={getFounderImage('clientMF')}
-        imageAlt="Diwakar Raipur and Lina Bhave"
+        imageAlt="Lina Bhave and Diwakar Raipure"
       >
         <Link to="/sunday-meditation" className="btn-primary">{t('aboutPage.join')}</Link>
         <Link to="/reviews" className="btn-secondary">{t('about.cta2')}</Link>

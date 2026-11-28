@@ -1,148 +1,122 @@
-import { useState } from 'react'
-import { ArrowLeft, LogOut, ShieldCheck } from 'lucide-react'
+import { useState, type FormEvent } from 'react'
+import { ArrowLeft, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAdmin } from '../hooks/useAdmin'
-import { isSupabaseConfigured } from '../lib/supabase'
 import { useLanguage } from '../context/LanguageContext'
-import { AdminAnnouncements } from '../components/admin/AdminAnnouncements'
-import { AdminMaterials } from '../components/admin/AdminMaterials'
-import { AdminReviews } from '../components/admin/AdminReviews'
-import { AdminSettings } from '../components/admin/AdminSettings'
-import { AdminQuotes } from '../components/admin/AdminQuotes'
-import type { TranslationKey } from '../i18n/translations'
+import { SheetAnnouncements, SheetEvents } from '../components/admin/SheetAdmin'
 
-type Tab = 'announcements' | 'materials' | 'reviews' | 'quotes' | 'settings'
-
-const tabs: { id: Tab; labelKey: TranslationKey }[] = [
-  { id: 'announcements', labelKey: 'admin.tab.announcements' },
-  { id: 'materials', labelKey: 'admin.tab.materials' },
-  { id: 'reviews', labelKey: 'admin.tab.reviews' },
-  { id: 'quotes', labelKey: 'admin.tab.quotes' },
-  { id: 'settings', labelKey: 'admin.tab.settings' },
-]
+type Tab = 'announcements' | 'events'
 
 export function AdminPage() {
-  const [tab, setTab] = useState<Tab>(() => (isSupabaseConfigured ? 'announcements' : 'quotes'))
-  const admin = useAdmin()
   const { t } = useLanguage()
-  const signedInAdmin = isSupabaseConfigured && admin.signedIn && admin.isAdmin
-  const visibleTabs = isSupabaseConfigured ? tabs : tabs.filter((item) => item.id === 'quotes')
+  const configuredPin = import.meta.env.VITE_ADMIN_PIN ?? ''
+  const [pin, setPin] = useState('')
+  const [unlockedPin, setUnlockedPin] = useState('')
+  const [error, setError] = useState('')
+  const [tab, setTab] = useState<Tab>('announcements')
+
+  function unlock(event: FormEvent) {
+    event.preventDefault()
+    const value = pin.trim()
+    if (!value) {
+      setError(t('admin.pinRequired'))
+      return
+    }
+    if (configuredPin && value !== configuredPin) {
+      setError(t('admin.pinWrong'))
+      return
+    }
+    setUnlockedPin(value)
+    setPin('')
+    setError('')
+  }
 
   return (
     <section className="section-shell !py-12 sm:!py-16">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="eyebrow">{t('admin.privateArea')}</p>
-          <h1 className="!text-3xl sm:!text-4xl">{t('footer.admin')}</h1>
-          {signedInAdmin && (
-            <p className="mt-3" style={{ color: 'var(--muted)' }}>
-              {t('admin.signedInAs')} {admin.user?.email}
-            </p>
-          )}
-        </div>
-        {admin.signedIn && (
-          <button type="button" onClick={admin.signOut} className="btn-secondary">
-            <LogOut size={18} /> {t('common.signOut')}
-          </button>
-        )}
-      </div>
+      <div className="mx-auto max-w-5xl">
+        <p className="eyebrow">{t('admin.privateArea')}</p>
+        <h1 className="!text-3xl sm:!text-4xl">{t('footer.admin')}</h1>
+        <p className="mt-4 text-lg" style={{ color: 'var(--muted)' }}>{t('admin.pinBody')}</p>
 
-      {!isSupabaseConfigured && (
-        <div className="card mt-8">
-          <h2 className="!text-2xl">{t('common.adminSupabaseTitle')}</h2>
-          <p className="mt-3 text-lg" style={{ color: 'var(--muted)' }}>
-            {t('common.adminSupabaseBody')}
-          </p>
-          <details className="mt-4">
-            <summary className="min-h-[48px] cursor-pointer font-semibold">
-              {t('common.readAll')}
-            </summary>
-            <ol className="mt-3 list-decimal space-y-2 pl-6 text-lg" style={{ color: 'var(--muted)' }}>
-              <li>Create a Supabase project and enable Google as an auth provider.</li>
-              <li>Run <code>supabase/schema.sql</code>.</li>
-              <li>Add the allowlisted admin Gmail addresses in <code>admin_allowlist</code>.</li>
-              <li>Restart the dev server, then sign in with the allowlisted Gmail account.</li>
-            </ol>
-          </details>
-          <Link to="/" className="btn-link mt-4 !justify-start">
-            <ArrowLeft size={18} /> {t('admin.backToCircle')}
-          </Link>
-        </div>
-      )}
-
-      {isSupabaseConfigured && admin.loading && (
-        <div className="card mt-8">
-          <p className="text-lg" style={{ color: 'var(--muted)' }}>{t('common.checkingAccess')}</p>
-        </div>
-      )}
-
-      {isSupabaseConfigured && !admin.loading && !admin.signedIn && (
-        <div className="card mt-8 text-center">
-          <span
-            className="inline-flex h-14 w-14 items-center justify-center rounded-full"
-            style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}
-          >
-            <ShieldCheck size={26} />
-          </span>
-          <h2 className="mt-5 !text-2xl">{t('footer.admin')}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg" style={{ color: 'var(--muted)' }}>
-            {t('admin.signInBody')}
-          </p>
-          {admin.error && <p className="mt-4 text-base text-red-800 dark:text-red-300">{admin.error}</p>}
-          <button type="button" onClick={admin.signIn} className="btn-primary mt-7">
-            {t('common.signInGoogle')}
-          </button>
-          <div className="mt-5"><Link to="/" className="btn-link">{t('admin.backToCircle')}</Link></div>
-        </div>
-      )}
-
-      {isSupabaseConfigured && !admin.loading && admin.signedIn && !admin.isAdmin && (
-        <div className="card mt-8 text-center">
-          <h2 className="!text-2xl">{t('common.notAdminTitle')}</h2>
-          <p className="mt-5 text-lg" style={{ color: 'var(--muted)' }}>
-            {t('common.notAdminBody').replace('{email}', admin.user?.email ?? '')}
-          </p>
-          <p className="mt-3 text-base" style={{ color: 'var(--muted)' }}>{t('admin.allowlistBody')}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <button type="button" onClick={admin.signOut} className="btn-secondary">
-              <LogOut size={18} /> {t('common.signOut')}
-            </button>
-            <Link to="/" className="btn-primary">{t('admin.backToCircle')}</Link>
+        {!unlockedPin ? (
+          <div className="card mx-auto mt-10 max-w-xl text-center">
+            <span
+              className="inline-flex h-14 w-14 items-center justify-center rounded-full"
+              style={{ background: 'var(--accent-soft)', color: 'var(--accent-strong)' }}
+            >
+              <ShieldCheck size={26} aria-hidden="true" />
+            </span>
+            <h2 className="mt-5 !text-2xl">{t('admin.pinTitle')}</h2>
+            <form onSubmit={unlock} className="mt-7 space-y-5 text-left">
+              <div>
+                <label htmlFor="admin-pin" className="mb-2 block text-base font-semibold">
+                  {t('admin.pinLabel')}
+                </label>
+                <input
+                  id="admin-pin"
+                  type="password"
+                  className="field"
+                  value={pin}
+                  autoComplete="off"
+                  maxLength={200}
+                  onChange={(event) => setPin(event.target.value)}
+                />
+              </div>
+              {!configuredPin && <p className="text-base" style={{ color: 'var(--muted)' }}>{t('admin.pinMissing')}</p>}
+              {error && <p className="text-base font-semibold text-red-800 dark:text-red-300" role="alert">{error}</p>}
+              <button type="submit" className="btn-primary w-full !min-h-[56px]">
+                <LockKeyhole size={19} aria-hidden="true" />
+                {t('admin.unlock')}
+              </button>
+            </form>
+            <div className="mt-7"><Link to="/" className="btn-link">{t('admin.backToCircle')}</Link></div>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap gap-2" role="tablist" aria-label={t('admin.privateArea')}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === 'announcements'}
+                  onClick={() => setTab('announcements')}
+                  className="min-h-[52px] rounded-full border px-5 text-base font-medium transition-colors"
+                  style={{
+                    borderColor: 'var(--border)',
+                    background: tab === 'announcements' ? 'var(--text)' : 'transparent',
+                    color: tab === 'announcements' ? 'var(--bg)' : 'var(--muted)',
+                  }}
+                >
+                  {t('admin.tab.announcements')}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === 'events'}
+                  onClick={() => setTab('events')}
+                  className="min-h-[52px] rounded-full border px-5 text-base font-medium transition-colors"
+                  style={{
+                    borderColor: 'var(--border)',
+                    background: tab === 'events' ? 'var(--text)' : 'transparent',
+                    color: tab === 'events' ? 'var(--bg)' : 'var(--muted)',
+                  }}
+                >
+                  {t('admin.tab.events')}
+                </button>
+              </div>
+              <button type="button" className="btn-secondary" onClick={() => { setUnlockedPin(''); setPin('') }}>
+                {t('common.signOut')}
+              </button>
+            </div>
 
-      <div className="mt-8 flex flex-wrap gap-2" role="tablist" aria-label={t('admin.privateArea')}>
-        {visibleTabs.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === item.id}
-            onClick={() => setTab(item.id)}
-            className="min-h-[52px] rounded-full border px-5 text-base font-medium transition-colors"
-            style={{
-              borderColor: 'var(--border)',
-              background: tab === item.id ? 'var(--text)' : 'transparent',
-              color: tab === item.id ? 'var(--bg)' : 'var(--muted)',
-            }}
-          >
-            {t(item.labelKey)}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-8 space-y-8">
-        {tab === 'quotes' && <AdminQuotes />}
-        {tab !== 'quotes' && !signedInAdmin && (
-          <div className="card">
-            <p className="text-lg" style={{ color: 'var(--muted)' }}>{t('admin.supabaseOnly')}</p>
-          </div>
+            <div className="mt-8 space-y-8">
+              {tab === 'announcements' && <SheetAnnouncements adminPin={unlockedPin} />}
+              {tab === 'events' && <SheetEvents adminPin={unlockedPin} />}
+              <Link to="/" className="btn-link !justify-start">
+                <ArrowLeft size={18} /> {t('admin.backToCircle')}
+              </Link>
+            </div>
+          </>
         )}
-        {signedInAdmin && tab === 'announcements' && <AdminAnnouncements />}
-        {signedInAdmin && tab === 'materials' && <AdminMaterials />}
-        {signedInAdmin && tab === 'reviews' && <AdminReviews />}
-        {signedInAdmin && tab === 'settings' && <AdminSettings />}
       </div>
     </section>
   )

@@ -6,7 +6,9 @@ import { AboutSection } from '../components/AboutSection'
 import { MaterialsGallery } from '../components/MaterialsGallery'
 import { ReviewsSection } from '../components/ReviewsSection'
 import { YouTubeSessions } from '../components/YouTubeSessions'
-import { QuotesSection } from '../components/QuotesSection'
+import { AnnouncementsSection } from '../components/AnnouncementsSection'
+import { EventsSection } from '../components/EventsSection'
+import { CommunitySection } from '../components/CommunitySection'
 import { FaqSection } from '../components/FaqSection'
 import { SectionHeading } from '../components/SectionHeading'
 import { useLanguage } from '../context/LanguageContext'
@@ -40,7 +42,9 @@ export function HomePage() {
   return (
     <>
       <HeroReel />
+      <AnnouncementsSection />
       <SundaySection />
+      <EventsSection />
 
       <section className="section-shell !pt-8">
         <SectionHeading
@@ -66,7 +70,7 @@ export function HomePage() {
 
       <YouTubeSessions />
 
-      <QuotesSection />
+      <CommunitySection />
 
       <section id="materials" className="section-shell !pt-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
