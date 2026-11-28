@@ -4,22 +4,37 @@ type Props = {
   src: string
   alt: string
   className?: string
+  /** Prefer the explicit feed id when available; `src` is parsed as a fallback. */
+  videoId?: string
 }
 
 const imageClass = 'h-full w-full object-cover scale-[1.08]'
-const FALLBACK_WIDTH = 120
 
-function youtubeId(url: string): string {
-  try {
-    const parsed = new URL(url)
-    if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1).split('/')[0]
-    if (parsed.hostname.endsWith('youtube.com')) {
-      const embed = parsed.pathname.match(/^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]+)/)
-      if (embed) return embed[1]
-      return parsed.searchParams.get('v') ?? ''
-    }
-  } catch {
-    return ''
+function isYouTubeId(value: string): boolean {
+  return /^[A-Za-z0-9_-]{11}$/.test(value)
+}
+
+function extractYouTubeId(value: string): string {
+  const candidate = value.trim()
+  if (isYouTubeId(candidate)) return candidate
+
+  const patterns = [
+    /[?&]v=([A-Za-z0-9_-]{11})/,
+    /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|live\/|vi\/))([A-Za-z0-9_-]{11})/,
+    /\/vi\/([A-Za-z0-9_-]{11})\//,
+  ]
+  for (const pattern of patterns) {
+    const match = candidate.match(pattern)
+    if (match?.[1]) return match[1]
+  }
+  return ''
+}
+
+function findYouTubeId(...values: Array<string | undefined>): string {
+  for (const value of values) {
+    if (!value) continue
+    const id = extractYouTubeId(value)
+    if (id) return id
   }
   return ''
 }
@@ -31,22 +46,25 @@ function driveId(url: string): string {
 
 /**
  * Shows a visible frame for YouTube, Google Drive and MP4 sources without
- * loading a full player. The 120px guard catches YouTube's missing-image tile.
+ * loading a full player. YouTube starts on hqdefault and only falls back to
+ * mqdefault if that image fails to load.
  */
-export function VideoThumbnail({ src, alt, className = 'aspect-video w-full' }: Props) {
-  const [imageSource, setImageSource] = useState('')
-  const [usedFallback, setUsedFallback] = useState(false)
-
-  const id = youtubeId(src)
+export function VideoThumbnail({ src, alt, className = 'aspect-video w-full', videoId }: Props) {
+  const id = findYouTubeId(videoId, src)
   const fileId = id ? '' : driveId(src)
   const isMp4 = /\.mp4(?:[?#]|$)/i.test(src)
+  const initialImage = id
+    ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+    : fileId
+      ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`
+      : ''
+  const [imageSource, setImageSource] = useState(initialImage)
+  const [usedFallback, setUsedFallback] = useState(false)
 
   useEffect(() => {
     setUsedFallback(false)
-    if (id) setImageSource(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`)
-    else if (fileId) setImageSource(`https://drive.google.com/thumbnail?id=${fileId}&sz=w800`)
-    else setImageSource('')
-  }, [id, fileId])
+    setImageSource(initialImage)
+  }, [initialImage])
 
   if (isMp4) {
     return (
@@ -67,6 +85,25 @@ export function VideoThumbnail({ src, alt, className = 'aspect-video w-full' }: 
     )
   }
 
+  if (id) {
+    return (
+      <div className={`overflow-hidden bg-black ${className}`}>
+        <img
+          src={imageSource}
+          alt={alt}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className={imageClass}
+          onError={() => {
+            if (usedFallback) return
+            setUsedFallback(true)
+            setImageSource(`https://i.ytimg.com/vi/${id}/mqdefault.jpg`)
+          }}
+        />
+      </div>
+    )
+  }
+
   if (!imageSource) {
     return <div className={`soft-panel !rounded-none ${className}`} aria-label={alt} />
   }
@@ -77,19 +114,9 @@ export function VideoThumbnail({ src, alt, className = 'aspect-video w-full' }: 
         src={imageSource}
         alt={alt}
         loading="lazy"
+        referrerPolicy="no-referrer"
         className={imageClass}
-        onLoad={(event) => {
-          if (!id || usedFallback) return
-          if (event.currentTarget.naturalWidth <= FALLBACK_WIDTH) {
-            setUsedFallback(true)
-            setImageSource(`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`)
-          }
-        }}
-        onError={() => {
-          if (!id || usedFallback) return
-          setUsedFallback(true)
-          setImageSource(`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`)
-        }}
+        onError={() => setImageSource('')}
       />
     </div>
   )

@@ -1,27 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Languages, Menu, MessageCircle, Moon, Sun, X } from 'lucide-react'
-import { siteSections } from '../config/navigation'
+import { publicNavSections } from '../config/navigation'
 import { WHATSAPP_URL } from '../config/site'
 import { useLanguage } from '../context/LanguageContext'
 import { useFontSize } from '../context/FontSizeContext'
 import { useTheme } from '../context/ThemeContext'
 import { useScrollSpy } from '../hooks/useScrollSpy'
+import { AnnouncementBar } from './AnnouncementBar'
 import { ChakraToggle } from './ChakraToggle'
 import { trackVisitorEvent } from '../lib/sheetTracker'
 
 export function Navbar() {
-  const { t, language, toggleLanguage } = useLanguage()
+  const { t, toggleLanguage } = useLanguage()
   const { decrease, increase, canDecrease, canIncrease } = useFontSize()
   const { theme, toggleTheme } = useTheme()
   const activeSection = useScrollSpy()
   const { pathname, hash } = useLocation()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const reducedMotion = useReducedMotion()
-  const activeKey =
-    pathname === '/admin' ? 'nav.admin' : siteSections.find((section) => section.id === activeSection)?.labelKey ?? 'nav.home'
+  const headerRef = useRef<HTMLElement>(null)
+  const activeKey = publicNavSections.find((section) => section.id === activeSection)?.labelKey ?? 'nav.home'
   const activeLabel = t(activeKey)
+
+  // The header is fixed, so the page needs a matching top offset. The
+  // announcement bar can be dismissed and changes height on small screens.
+  useEffect(() => {
+    const header = headerRef.current
+    if (!header || typeof ResizeObserver === 'undefined') return
+    const updateHeight = () => {
+      document.documentElement.style.setProperty('--site-header-height', `${header.offsetHeight}px`)
+    }
+    updateHeight()
+    const observer = new ResizeObserver(updateHeight)
+    observer.observe(header)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     setDrawerOpen(false)
@@ -43,34 +58,71 @@ export function Navbar() {
 
   return (
     <header
-      className="sticky top-0 z-40 border-b backdrop-blur-md"
+      ref={headerRef}
+      className="fixed left-0 right-0 top-0 z-40 border-b backdrop-blur-md"
       style={{ background: 'color-mix(in srgb, var(--bg) 94%, transparent)', borderColor: 'var(--border)' }}
     >
+      <AnnouncementBar />
       <nav
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-8"
+        className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-1 px-3 sm:gap-2 sm:px-6"
         aria-label="Main navigation"
       >
         <Link
           to="/"
-          className="flex min-h-[52px] shrink-0 items-center gap-2 text-lg font-bold tracking-tight sm:text-2xl"
+          className="flex min-h-[52px] shrink-0 items-center gap-2 text-[15px] font-bold tracking-tight sm:text-base xl:text-xl"
           aria-label={`${t('common.brand')} — ${t('nav.home')}`}
         >
-          <img src="/favicon.svg" alt="" className="hidden h-10 w-10 shrink-0 sm:block" />
-          <span>{t('common.brand')}</span>
+          <img src="/favicon.svg" alt="" className="h-9 w-9 shrink-0" />
+          <span className="hidden whitespace-nowrap sm:inline">{t('common.brand')}</span>
         </Link>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex">
+          {publicNavSections.map((section) => {
+            const isActive = pathname === '/' && activeSection === section.id
+            return (
+              <Link
+                key={section.id}
+                to={`/#${section.id}`}
+                aria-current={isActive ? 'location' : undefined}
+                className={`inline-flex min-h-[48px] shrink-0 items-center whitespace-nowrap rounded-full px-1 py-2 text-[13px] transition-colors xl:px-2.5 xl:text-[15px] ${
+                  isActive ? 'font-bold underline decoration-2 underline-offset-4' : 'font-medium hover:opacity-75'
+                }`}
+                style={{
+                  color: isActive ? 'var(--accent-strong)' : 'var(--text)',
+                  background: isActive ? 'var(--accent-soft)' : 'transparent',
+                }}
+              >
+                {t(section.labelKey)}
+              </Link>
+            )
+          })}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="inline-flex min-h-[48px] items-center gap-1.5 rounded-full border px-2 text-[12px] font-bold sm:px-3 sm:text-sm xl:text-base"
+            style={{ borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text)' }}
+            aria-label={`${t('nav.language')}: English / हिन्दी`}
+            title={`${t('nav.language')}: English / हिन्दी`}
+          >
+            <Languages size={18} aria-hidden="true" />
+            <span className="whitespace-nowrap sm:hidden">EN / हि</span>
+            <span className="hidden whitespace-nowrap sm:inline">English / हिन्दी</span>
+          </button>
           <ChakraToggle />
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-expanded={drawerOpen}
             aria-controls="mobile-nav-drawer"
-            className="inline-flex min-h-[52px] items-center gap-2 rounded-full border px-4 text-base font-semibold lg:hidden"
+            aria-label={t('nav.menu')}
+            className="inline-flex min-h-[48px] items-center gap-1.5 rounded-full border px-2.5 text-sm font-semibold sm:px-4 sm:text-base lg:hidden"
             style={{ borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text)' }}
           >
             <Menu size={20} aria-hidden="true" />
-            <span>{t('nav.menu')}</span>
+            <span className="hidden whitespace-nowrap sm:inline">{t('nav.menu')}</span>
           </button>
           <a
             href={WHATSAPP_URL}
@@ -83,45 +135,6 @@ export function Navbar() {
           </a>
         </div>
       </nav>
-
-      <div className="hidden border-t lg:block" style={{ borderColor: 'var(--border)' }}>
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="flex gap-1 overflow-x-auto py-1" role="navigation" aria-label={t('common.currentSection')}>
-            {siteSections.map((section) => {
-              const isActive = pathname === '/' && activeSection === section.id
-              return (
-                <Link
-                  key={section.id}
-                  to={`/#${section.id}`}
-                  aria-current={isActive ? 'location' : undefined}
-                  className={`inline-flex min-h-[48px] shrink-0 items-center rounded-full px-4 text-base transition-colors ${
-                    isActive ? 'font-bold underline decoration-2 underline-offset-4' : 'font-medium hover:opacity-75'
-                  }`}
-                  style={{
-                    color: isActive ? 'var(--accent-strong)' : 'var(--text)',
-                    background: isActive ? 'var(--accent-soft)' : 'transparent',
-                  }}
-                >
-                  {t(section.labelKey)}
-                </Link>
-              )
-            })}
-            <Link
-              to="/admin"
-              aria-current={pathname === '/admin' ? 'page' : undefined}
-              className={`inline-flex min-h-[48px] shrink-0 items-center rounded-full px-4 text-base transition-colors ${
-                pathname === '/admin' ? 'font-bold underline decoration-2 underline-offset-4' : 'font-medium hover:opacity-75'
-              }`}
-              style={{
-                color: pathname === '/admin' ? 'var(--accent-strong)' : 'var(--text)',
-                background: pathname === '/admin' ? 'var(--accent-soft)' : 'transparent',
-              }}
-            >
-              {t('nav.admin')}
-            </Link>
-          </div>
-        </div>
-      </div>
 
       <AnimatePresence>
         {drawerOpen && (
@@ -174,7 +187,7 @@ export function Navbar() {
               </p>
 
               <nav className="mt-6 flex flex-col gap-2" aria-label={t('nav.menu')}>
-                {siteSections.map((section) => {
+                {publicNavSections.map((section) => {
                   const isActive = pathname === '/' && activeSection === section.id
                   return (
                     <Link
@@ -192,18 +205,6 @@ export function Navbar() {
                     </Link>
                   )
                 })}
-                <Link
-                  to="/admin"
-                  onClick={() => setDrawerOpen(false)}
-                  aria-current={pathname === '/admin' ? 'page' : undefined}
-                  className="flex min-h-[56px] items-center rounded-2xl px-4 text-lg font-semibold"
-                  style={{
-                    color: pathname === '/admin' ? 'var(--accent-strong)' : 'var(--text)',
-                    background: pathname === '/admin' ? 'var(--accent-soft)' : 'transparent',
-                  }}
-                >
-                  {t('nav.admin')}
-                </Link>
               </nav>
 
               <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--border)' }}>
@@ -215,7 +216,7 @@ export function Navbar() {
                   style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}
                 >
                   <Languages size={20} aria-hidden="true" />
-                  <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
+                  <span>English / हिन्दी</span>
                 </button>
                 <div className="mt-2 flex gap-2">
                   <button

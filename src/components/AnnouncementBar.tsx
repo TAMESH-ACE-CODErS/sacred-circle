@@ -37,12 +37,12 @@ export function AnnouncementBar() {
           className="overflow-hidden"
           style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}
         >
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-5 py-3 text-center sm:px-8">
+          <div className="relative mx-auto flex max-w-6xl items-center justify-center px-5 py-2 text-center sm:px-8 sm:py-3">
             <a
               href={link}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-[48px] items-center text-base font-semibold underline decoration-1 underline-offset-4 hover:opacity-75"
+              className="inline-flex min-h-[48px] items-center px-6 text-base font-semibold leading-snug underline decoration-1 underline-offset-4 hover:opacity-75 sm:px-12"
               style={{ color: 'var(--text)' }}
             >
               {language === 'hi' ? messageHi : messageEn}
@@ -50,7 +50,7 @@ export function AnnouncementBar() {
             <button
               type="button"
               onClick={dismiss}
-              className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center gap-1 rounded-full px-2 text-base"
+              className="absolute right-1 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-base sm:right-3"
               style={{ color: 'var(--muted)' }}
               aria-label={t('common.dismiss')}
               title={t('common.dismiss')}

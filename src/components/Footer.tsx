@@ -71,7 +71,6 @@ export function Footer() {
           <button type="button" onClick={replayIntro} className="btn-link !min-h-[48px] !text-base">
             {t('footer.replayIntro')}
           </button>
-          <Link to="/admin" className="btn-link !min-h-[48px] !text-base">{t('footer.admin')}</Link>
         </div>
       </div>
     </footer>

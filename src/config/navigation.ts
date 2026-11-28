@@ -22,6 +22,22 @@ export const siteSections = [
 
 export type SectionId = (typeof siteSections)[number]['id']
 
+/**
+ * Public nav is deliberately short and scroll-free. Admin is reachable only
+ * by typing /admin in the address bar.
+ */
+export const publicNavSections = [
+  { id: 'about', labelKey: 'nav.about' },
+  { id: 'sunday', labelKey: 'nav.sunday' },
+  { id: 'events', labelKey: 'nav.events' },
+  { id: 'videos', labelKey: 'nav.youtube' },
+  { id: 'materials', labelKey: 'nav.library' },
+  { id: 'audio', labelKey: 'nav.audio' },
+  { id: 'comments', labelKey: 'nav.community' },
+  { id: 'reviews', labelKey: 'nav.reviews' },
+  { id: 'contact', labelKey: 'nav.contact' },
+] as const satisfies readonly { id: string; labelKey: TranslationKey }[]
+
 export const routeSectionMap: Record<string, SectionId> = {
   '/': 'home',
   '/#home': 'home',
@@ -42,7 +58,7 @@ export const routeSectionMap: Record<string, SectionId> = {
   '/#contact': 'contact',
 }
 
-/** The nine required tabs. Extra Sunday/check-in links stay in the drawer. */
+/** Footer links only. Admin is intentionally excluded from all public UI. */
 export const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
@@ -52,7 +68,6 @@ export const defaultNavItems: NavItem[] = [
   { label: 'Audio', href: '/audio' },
   { label: 'Community', href: '/community' },
   { label: 'Reviews', href: '/reviews' },
-  { label: 'Admin', href: '/admin' },
 ]
 
 export function normalizeNavItems(value: unknown): NavItem[] {

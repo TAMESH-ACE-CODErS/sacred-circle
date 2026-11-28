@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, MessageCircle } from 'lucide-react'
 import { copy, WHATSAPP_URL } from '../config/site'
 import { getFounderImage, mediaManifest } from '../config/mediaManifest'
@@ -7,11 +8,21 @@ import { useLanguage } from '../context/LanguageContext'
 import { useSiteContent } from '../hooks/useSiteContent'
 import { trackVisitorEvent } from '../lib/sheetTracker'
 
+const founderNames = [copy.foundersEn, copy.foundersHi]
+
 export function HeroReel() {
   const { sundayTime } = useSiteContent()
   const { t, language } = useLanguage()
+  const reducedMotion = useReducedMotion()
+  const [nameIndex, setNameIndex] = useState(0)
   const isHindi = language === 'hi'
-  const name = isHindi ? copy.foundersHi : copy.foundersEn
+  // The name keeps moving in both languages; the toggle only changes the
+  // surrounding copy, never this bilingual rotation.
+  useEffect(() => {
+    const timer = window.setInterval(() => setNameIndex((current) => (current + 1) % founderNames.length), 3500)
+    return () => window.clearInterval(timer)
+  }, [])
+  const name = founderNames[nameIndex]
   const teaching = isHindi ? copy.teachingHi : copy.teachingEn
   const time = isHindi ? t('sunday.time') : sundayTime
 
@@ -34,13 +45,13 @@ export function HeroReel() {
           <div className="min-h-[9.5rem] sm:min-h-[11rem]">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
-                key={language}
+                key={nameIndex}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: reducedMotion ? 0.01 : 0.9, ease: [0.22, 1, 0.36, 1] }}
               >
-                <h1 className={isHindi ? 'devanagari' : ''}>{name}</h1>
+                <h1 className={nameIndex === 1 ? 'devanagari' : ''}>{name}</h1>
                 <p
                   className={`mt-5 text-xl sm:text-2xl ${isHindi ? 'devanagari' : ''}`}
                   style={{ color: 'var(--muted)' }}

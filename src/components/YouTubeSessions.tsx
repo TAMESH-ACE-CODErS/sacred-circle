@@ -110,12 +110,13 @@ export function YouTubeSessions() {
                 >
                   <span className="relative block aspect-video overflow-hidden">
                     <VideoThumbnail
-                      src={video.thumbnail}
+                      src={video.url}
+                      videoId={video.videoId}
                       alt={`${t('videos.thumbnailAlt')} ${video.title}`}
                       className="h-full w-full"
                     />
                     <span
-                      className="absolute inset-0 grid place-items-center"
+                      className="pointer-events-none absolute inset-0 z-10 grid place-items-center"
                       style={{ background: 'rgba(20, 17, 15, 0.24)' }}
                       aria-hidden="true"
                     >

@@ -54,6 +54,7 @@ export const en = {
   'nav.admin': 'Admin',
   'nav.menu': 'Menu',
   'nav.closeMenu': 'Close menu',
+  'nav.language': 'Language',
   'nav.library': 'Library',
   'nav.audio': 'Audio',
   'nav.community': 'Community',
@@ -504,6 +505,7 @@ export const en = {
   'admin.audioKeepSecrets': 'The current Drive link and PIN are hidden for privacy. Leave those fields blank to keep them.',
   'admin.audioNoDuration': 'No duration listed',
 
+  'intro.skipAbout': 'Skip →',
   'intro.skipReel': 'Skip Reel →',
   'intro.skipToWebsite': 'Skip to website →',
   'intro.enterWebsite': 'Enter Website →',
@@ -686,6 +688,7 @@ export const hi: Record<TranslationKey, string> = {
   'nav.admin': 'प्रशासन',
   'nav.menu': 'मेन्यू',
   'nav.closeMenu': 'मेन्यू बंद करें',
+  'nav.language': 'भाषा',
   'nav.library': 'लाइब्रेरी',
   'nav.audio': 'ऑडियो',
   'nav.community': 'समुदाय',
@@ -1102,6 +1105,7 @@ export const hi: Record<TranslationKey, string> = {
   'admin.audioKeepSecrets': 'गोपनीयता के लिए मौजूदा Drive लिंक और PIN छिपे हैं। उन्हें रखने के लिए फ़ील्ड खाली छोड़ें।',
   'admin.audioNoDuration': 'अवधि नहीं दी गई',
 
+  'intro.skipAbout': 'आगे बढ़ें →',
   'intro.skipReel': 'रील छोड़ें →',
   'intro.skipToWebsite': 'सीधे वेबसाइट जाएँ →',
   'intro.enterWebsite': 'वेबसाइट में जाएँ →',
