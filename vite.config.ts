@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => {
     env.VITE_SACRED_SHEET_URL ||
     env.SHEET_API_URL ||
     env.SACRED_SHEET_URL ||
-    ''
+    'https://script.google.com/macros/s/AKfycbz-JRfwXkgh-RJwCirMU86PurG26AXnF0zbulnQkA45WVEbBlLhfMkaBfnRD_qS5kfi/exec'
   const siteAdminPin =
     env.VITE_ADMIN_PIN ||
     env.ADMIN_PIN ||

@@ -1,6 +1,6 @@
 # Sacred Circle community sheet — free Google Sheet backend
 
-One Google Sheet, one Apps Script web app, five tabs, zero paid services. The browser never calls Apps Script directly: it calls `/api/site`, and the Vercel/dev bridge owns the sheet URL and the admin PIN. Organizers can open the Sheet directly to read, moderate or edit every entry.
+One Google Sheet, one Apps Script web app, five tabs, zero paid services. The browser calls the deployed Apps Script web app directly; every POST uses `text/plain;charset=utf-8` so there is no CORS preflight. The optional `/api/site` bridge is kept for deployments that prefer to hold the sheet URL or admin key server-side. Organizers can open the Sheet directly to read, moderate or edit every entry.
 
 ## 1. Create the Sheet
 
@@ -25,7 +25,7 @@ The site uses `VITE_ADMIN_PIN` (or its alias `VITE_ADMIN_KEY`) for the `/admin` 
 - Property: `ADMIN_PIN`
 - Value: the same key used in `VITE_ADMIN_PIN`
 
-The browser never stores the PIN. It is checked again by `/api/site` before any add/delete action reaches the Sheet.
+The browser never stores the PIN. Apps Script checks it again before any add/delete action reaches the Sheet; the optional `/api/site` bridge also checks it before forwarding.
 
 Optional audio sync: set Script Property `AUDIO_DRIVE_FOLDER_ID` to a Drive folder containing `.mp3`, `.m4a`, `.wav` or `.ogg` files. `audio_sync_drive` adds new files and refreshes matching rows without duplicating them.
 
@@ -41,14 +41,14 @@ Optional audio sync: set Script Property `AUDIO_DRIVE_FOLDER_ID` to a Drive fold
 Set these in `.env.local` and in Vercel **Project Settings → Environment Variables**:
 
 ```
-VITE_SHEET_API_URL=https://script.google.com/macros/s/YOUR_ID/exec
+VITE_SHEET_API_URL=https://script.google.com/macros/s/AKfycbz-JRfwXkgh-RJwCirMU86PurG26AXnF0zbulnQkA45WVEbBlLhfMkaBfnRD_qS5kfi/exec
 VITE_ADMIN_PIN=your-short-admin-passcode
 # VITE_ADMIN_KEY=your-short-admin-passcode
 ```
 
-Restart `npm run dev` after changing `.env.local`. `VITE_SACRED_SHEET_URL` is still accepted as a fallback for older deployments, but `VITE_SHEET_API_URL` is the primary name.
+Restart `npm run dev` after changing `.env.local`. `VITE_SACRED_SHEET_URL` is still accepted as a fallback for older deployments, but `VITE_SHEET_API_URL` is the primary name. The deployed URL above is also the built-in default, so the site works immediately even before env vars are set.
 
-## Proxied endpoints (`/api/site`)
+## Endpoints (direct Apps Script, with optional `/api/site` bridge)
 
 | Call | Purpose |
 | --- | --- |
@@ -67,7 +67,7 @@ Restart `npm run dev` after changing `.env.local`. `VITE_SACRED_SHEET_URL` is st
 | `POST { action: "announcement_create", adminKey, ... }` | Legacy admin add |
 | `POST { action: "event_create", adminKey, ... }` | Legacy admin add |
 
-The serverless bridge sends every POST to Apps Script with `Content-Type: text/plain;charset=utf-8`, which avoids the Apps Script CORS preflight. If `VITE_SHEET_API_URL` is missing, public sections show a friendly setup note instead of a broken feed.
+Every Apps Script POST — whether sent directly by the browser or forwarded by the bridge — uses `Content-Type: text/plain;charset=utf-8`, which avoids the Apps Script CORS preflight. If `VITE_SHEET_API_URL` is missing, the deployed URL above is used as the fallback.
 
 Visitor logging is deliberately fire-and-forget: a slow or offline Sheet never blocks a click, reaction, card tap or page transition.
 

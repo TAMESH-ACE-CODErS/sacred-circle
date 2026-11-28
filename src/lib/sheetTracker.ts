@@ -1,3 +1,4 @@
+import { postToSheetFireAndForget } from './sheetApi'
 import type {
   DeviceType,
   LanguageCode,
@@ -47,9 +48,9 @@ export function currentVisitorContext(): {
 }
 
 /**
- * Fire-and-forget visitor logging. The browser only talks to /api/site;
- * the serverless bridge owns VITE_SHEET_API_URL, so no Apps Script URL or
- * CORS detail leaks into src/.
+ * Fire-and-forget visitor logging. All Apps Script traffic goes through
+ * sheetApi, which always uses a simple `text/plain` POST to avoid CORS
+ * preflight requests.
  */
 export function trackVisitorEvent(
   eventType: VisitorEventType,
@@ -67,16 +68,5 @@ export function trackVisitorEvent(
     referrer: document.referrer || '',
   }
 
-  try {
-    void fetch('/api/site', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      keepalive: true,
-    }).catch(() => {
-      // Tracking must never slow down or interrupt a visitor.
-    })
-  } catch {
-    // Offline / privacy-blocked browsers are fine.
-  }
+  postToSheetFireAndForget(body)
 }

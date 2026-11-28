@@ -1,17 +1,20 @@
 /**
- * Serverless bridge to the free Google Apps Script web app.
- * The browser always calls /api/site, so Apps Script CORS never matters.
+ * Optional serverless bridge to the free Google Apps Script web app.
+ * The site calls Apps Script directly; this endpoint remains for deployments
+ * that prefer to keep the sheet URL or admin key server-side.
  */
 declare const process: { env: Record<string, string | undefined> }
 
 export type SiteBridgeResult = { status: number; body: unknown }
 
+const DEPLOYED_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbz-JRfwXkgh-RJwCirMU86PurG26AXnF0zbulnQkA45WVEbBlLhfMkaBfnRD_qS5kfi/exec'
 const SCRIPT_URL =
   process.env.VITE_SHEET_API_URL ||
   process.env.VITE_SACRED_SHEET_URL ||
   process.env.SHEET_API_URL ||
   process.env.SACRED_SHEET_URL ||
-  ''
+  DEPLOYED_SCRIPT_URL
 const ADMIN_PIN =
   process.env.VITE_ADMIN_PIN ||
   process.env.ADMIN_PIN ||

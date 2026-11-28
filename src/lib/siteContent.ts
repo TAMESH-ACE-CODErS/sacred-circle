@@ -4,6 +4,7 @@ import {
   getAnnouncementsEvents,
   getAudios,
   getCommunity,
+  postToSheet,
 } from './sheetApi'
 import type {
   AudioSession,
@@ -18,17 +19,6 @@ import type {
 export type SiteFeed<T> = {
   rows: T[]
   unconfigured: boolean
-}
-
-async function post(payload: Record<string, unknown>): Promise<{ error?: string }> {
-  const response = await fetch('/api/site', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  const data = (await response.json().catch(() => ({}))) as { error?: string }
-  if (!response.ok || data.error) throw new Error(data.error ?? 'The sheet is unavailable.')
-  return data
 }
 
 export async function fetchPosts(): Promise<SiteFeed<CommunityPost>> {
@@ -58,7 +48,7 @@ export async function createReply(input: CommunityReplyInput): Promise<Community
 }
 
 export async function submitCheckin(input: SundayCheckinInput): Promise<void> {
-  await post({ action: 'checkin_create', ...input })
+  await postToSheet({ action: 'checkin_create', ...input })
 }
 
 /* Legacy helpers kept so older sections keep working during rollout. */
@@ -104,11 +94,11 @@ export async function createAnnouncement(
   input: { title: string; body: string; date: string; is_pinned: boolean },
   adminPin: string,
 ): Promise<void> {
-  await post({ action: 'announcement_create', adminPin, ...input })
+  await postToSheet({ action: 'announcement_create', adminPin, ...input })
 }
 
 export async function deleteAnnouncement(id: string, adminPin: string): Promise<void> {
-  await post({ action: 'announcement_delete', adminPin, id })
+  await postToSheet({ action: 'announcement_delete', adminPin, id })
 }
 
 export async function createEvent(
@@ -121,9 +111,9 @@ export async function createEvent(
   },
   adminPin: string,
 ): Promise<void> {
-  await post({ action: 'event_create', adminPin, ...input })
+  await postToSheet({ action: 'event_create', adminPin, ...input })
 }
 
 export async function deleteEvent(id: string, adminPin: string): Promise<void> {
-  await post({ action: 'event_delete', adminPin, id })
+  await postToSheet({ action: 'event_delete', adminPin, id })
 }

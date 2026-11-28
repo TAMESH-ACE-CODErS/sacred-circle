@@ -126,6 +126,7 @@ export type AudioPinResult = {
   ok: boolean
   audio_preview_url: string
   title?: string
+  error?: string
 }
 
 export type CommunityFeed = {
